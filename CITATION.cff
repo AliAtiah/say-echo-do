@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software or the theory, please cite the paper."
+title: "Say, Echo, Do: Strategic Narratives and Revealed Positioning in Financial Markets"
+type: software
+version: 0.1.0
+date-released: 2026-09-29
+license: MIT
+repository-code: "https://github.com/AliAtiah/say-echo-do"
+authors:
+  - name: "Ali Atiah Alzahrani"
+keywords:
+  - quantitative finance
+  - sentiment analysis
+  - strategic communication
+  - Hawkes processes
+  - contrastive learning
+  - path signatures
+preferred-citation:
+  type: article
+  title: "Say, Echo, Do: Strategic Narratives and Revealed Positioning in Financial Markets"
+  authors:
+    - name: "Ali Atiah Alzahrani"
+  year: 2026
+  notes: "Preprint, first draft."

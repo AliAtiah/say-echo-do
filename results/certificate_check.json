@@ -1,0 +1,10 @@
+{
+ "trials": 3000,
+ "seed": 1,
+ "exact_certified": 71205,
+ "pinsker_certified": 19931,
+ "exact_violations": 0,
+ "pinsker_violations": 0,
+ "pinsker_not_in_exact": 0,
+ "ratio_exact_to_pinsker": 3.5725753850785207
+}

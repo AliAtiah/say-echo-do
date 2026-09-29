@@ -1,0 +1,16 @@
+result,quantity,theory,simulation
+Corollary 3.5,Bayes weight on echo,0.0,-0.0006080103266339399
+Theorem 3.4,"return loading, echo channel",-0.18404907975460122,-0.1843267765674462
+Theorem 3.7,loading on positioning c_x,0.4012298373109107,0.4004443654305299
+Theorem 3.8,absorption coefficient c_A,-0.19974914657033147,-0.20042517848479677
+Theorem 4.3,"speech slope psi (phi=0.6, a=0.5)",-0.7142857142857141,-0.714285646419375
+Theorem 4.3,"trade slope chi (phi=0.6, a=0.5)",1.4285714285714286,1.4285713837868677
+Theorem 4.5,"Cov(r, Say), t3 values, false alarm",-2.2944049586776845,-2.293477953352108
+Theorem 4.5,"Cov(r, Say), t3 values, exaggeration",-7.607999999999989,-7.675948094886134
+Theorem 4.7,2-cycle point phi_+ at a=1.95,1.13112494995996,1.1311249499599587
+Theorem 4.7,2-cycle point phi_- at a=1.95,0.8188750500400399,0.8188750500400424
+Theorem 4.7,2-cycle multiplier at a=1.8,0.0,9.251858538542972e-16
+Theorem 5.7,max |posterior - product| (exact enumeration),0.0,1.1102230246251565e-16
+Theorem 7.3,"Levy area rate, lag 0.5",0.2356006846722214,0.23601382951343727
+Theorem 9.1,growth at shrunk Kelly c*,0.010557432432432434,0.01054998084099128
+Theorem 9.1,growth at full Kelly,-0.029999999999999995,-0.030017438827727595

@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.venv/
+.ipynb_checkpoints/
+# LaTeX build products (compiled PDFs live in paper/pdf/)
+paper/**/*.aux
+paper/**/*.log
+paper/**/*.out
+paper/**/*.toc
+paper/**/*.bbl
+paper/**/*.blg
+paper/icml/*.pdf
+paper/conference/*.pdf
+paper/arxiv/*.pdf
+paper/explainer/*.pdf
+paper/report/*.pdf
+paper/journal/*.pdf
+!paper/journal/fig_declustering.pdf
+paper/arxiv-dark/*.pdf

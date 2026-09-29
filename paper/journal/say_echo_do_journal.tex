@@ -1,0 +1,1218 @@
+% =====================================================================
+%  Say, Echo, Do -- one-column journal edition
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Fonts & page ------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[scaled=0.9]{helvet}
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.8cm,right=2.8cm,headsep=0.8cm,footskip=1.1cm]{geometry}
+\linespread{1.12}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0.35em}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,tabularx,array,multirow}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc,decorations.markings,decorations.pathreplacing,shapes.geometric}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\usepgfplotslibrary{groupplots,fillbetween}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[font={small,sf},labelfont={sf,bf},justification=justified,singlelinecheck=false]{caption}
+\usepackage[authoryear,round]{natbib}
+\setlength{\bibsep}{3pt plus 1pt}
+\usepackage{microtype}
+\usepackage[colorlinks=true,linkcolor=sNavy,citecolor=sNavy,urlcolor=sNavy]{hyperref}
+\usepackage[capitalise,noabbrev,nameinlink]{cleveref}
+
+\setlist{itemsep=3pt,topsep=4pt,parsep=0pt,leftmargin=1.6em}
+
+% ---------- AAAS (Science) palette ---------------------------------------
+\definecolor{ink}{HTML}{1B1919}
+\definecolor{sNavy}{HTML}{3B4992}
+\definecolor{sRed}{HTML}{EE0000}
+\definecolor{sGreen}{HTML}{008B45}
+\definecolor{sPurple}{HTML}{631879}
+\definecolor{sTeal}{HTML}{008280}
+\definecolor{sCrimson}{HTML}{BB0021}
+\definecolor{sViolet}{HTML}{5F559B}
+\definecolor{sMagenta}{HTML}{A20056}
+\definecolor{sGray}{HTML}{808180}
+\colorlet{say}{sPurple}
+\colorlet{echo}{sCrimson}
+\colorlet{do}{sNavy}
+\colorlet{good}{sGreen}
+
+% ---------- Headings, header, captions ------------------------------------
+\titleformat{\section}{\sffamily\bfseries\Large\color{sNavy}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\sffamily\bfseries\large\color{ink}}{\thesubsection}{0.6em}{}
+\titleformat{\paragraph}[runin]{\sffamily\bfseries\normalsize\color{ink}}{}{}{}[.]
+\titlespacing*{\section}{0pt}{22pt}{8pt}
+\titlespacing*{\subsection}{0pt}{14pt}{5pt}
+\titlespacing*{\paragraph}{0pt}{8pt}{0.7em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize\color{sGray} Say, Echo, Do}
+\fancyhead[R]{\sffamily\footnotesize\color{sGray} Strategic speech, media echo, and false alarms}
+\fancyfoot[C]{\sffamily\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{sGray!50}\leaders\hrule height \headrulewidth\hfill}}
+
+\DeclareCaptionLabelSeparator{pipe}{\hspace{0.45em}\textbar\hspace{0.45em}}
+\captionsetup{labelsep=pipe,skip=6pt}
+\setlength{\textfloatsep}{16pt plus 3pt minus 3pt}
+\setlength{\floatsep}{14pt plus 3pt minus 3pt}
+\setlength{\intextsep}{14pt plus 3pt minus 3pt}
+
+% ---------- Figure style ------------------------------------------------------
+\pgfplotsset{sci/.style={
+  axis lines*=left,
+  axis line style={ink!75, line width=0.5pt},
+  tick style={ink!75, line width=0.4pt},
+  tick align=outside, major tick length=2pt,
+  tick label style={font=\sffamily\scriptsize, text=ink!85},
+  label style={font=\sffamily\scriptsize, text=ink},
+  legend style={font=\sffamily\scriptsize, draw=none, fill=none, row sep=-1pt},
+  legend cell align=left,
+  every axis plot/.append style={line width=1.0pt},
+  xticklabel={\pgfmathprintnumber[assume math mode=true]{\tick}},
+  yticklabel={\pgfmathprintnumber[assume math mode=true]{\tick}},
+}}
+\tikzset{
+  numb/.style={circle, draw=ink, fill=white, line width=0.5pt, inner sep=0.6pt, font=\sffamily\bfseries\tiny, text=ink},
+  lbl/.style={font=\sffamily\scriptsize, text=ink},
+}
+\newcommand{\panel}[1]{\par{\raggedright\noindent\sffamily\bfseries\normalsize #1\par}\vspace{-6pt}}
+\newcommand{\fitbox}[1]{\begin{adjustbox}{max width=\linewidth}#1\end{adjustbox}}
+
+% ---------- Theorems --------------------------------------------------------
+\newtheoremstyle{sci}{8pt}{8pt}{\itshape}{}{\sffamily\bfseries}{.}{0.5em}{}
+\newtheoremstyle{scidef}{8pt}{8pt}{}{}{\sffamily\bfseries}{.}{0.5em}{}
+\theoremstyle{sci}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{scidef}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\crefname{assumption}{Assumption}{Assumptions}
+\crefname{remark}{Remark}{Remarks}
+
+% ---------- Boxes -----------------------------------------------------------
+\newtcolorbox{inwords}{enhanced,colback=good!5,colframe=good!5,
+  borderline west={2.2pt}{0pt}{good!80!black},arc=0pt,outer arc=0pt,left=8pt,right=8pt,top=4pt,bottom=4pt,
+  before skip=6pt,after skip=10pt,fontupper=\normalsize,before upper={\textsf{\textbf{\color{good!70!black}In words.}}\enspace}}
+\newtcolorbox{keybox}[1]{enhanced,colback=sNavy!5,colframe=sNavy!5,
+  borderline west={2.2pt}{0pt}{sNavy},arc=0pt,outer arc=0pt,left=8pt,right=8pt,top=5pt,bottom=5pt,
+  before skip=8pt,after skip=10pt,before upper={\textsf{\textbf{\color{sNavy}#1}}\par\smallskip}}
+
+% ---------- Macros ------------------------------------------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\z}{\bm{z}}
+\newcommand{\w}{\bm{w}}
+\newcommand{\y}{\bm{y}}
+\newcommand{\h}{\bm{h}}
+\newcommand{\bphi}{\bm{\varphi}}
+\newcommand{\ind}{\mathbf{1}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\KL}{KL}
+\newcommand{\SAY}{\textcolor{say}{\textsf{\textbf{Say}}}}
+\newcommand{\ECHO}{\textcolor{echo}{\textsf{\textbf{Echo}}}}
+\newcommand{\DO}{\textcolor{do}{\textsf{\textbf{Do}}}}
+
+% =====================================================================
+\begin{document}
+
+\thispagestyle{empty}
+\noindent{\color{sNavy}\rule{\linewidth}{1.2pt}}\\[4pt]
+{\sffamily\footnotesize\bfseries\color{sNavy} RESEARCH ARTICLE \quad\textcolor{sGray}{\textbar}\quad \textcolor{sGray}{Quantitative Finance \textbullet\ Machine Learning}}\par
+\vspace{10pt}
+{\sffamily\bfseries\fontsize{24}{29}\selectfont \textcolor{say}{Say}, \textcolor{echo}{Echo}, \textcolor{do}{Do}\par}
+\vspace{6pt}
+{\sffamily\fontsize{15}{19}\selectfont Strategic speech, media echo, and the economics of false alarms\par}
+\vspace{12pt}
+{\sffamily\large [Author Name]\textsuperscript{1}\par}
+\vspace{2pt}
+{\sffamily\small\color{ink!75}\textsuperscript{1}[Affiliation, City, Country]\quad\textbullet\quad Correspondence: [email]\par}
+\vspace{4pt}
+{\sffamily\footnotesize\color{sGray} Preprint, September 2026\par}
+\vspace{10pt}
+
+\begin{tcolorbox}[enhanced,colback=ink!3,colframe=ink!3,arc=0pt,outer arc=0pt,left=12pt,right=12pt,top=8pt,bottom=8pt,fontupper=\small,before upper={\setlength{\parskip}{0.5em}},
+  borderline north={0.6pt}{0pt}{ink!30},borderline south={0.6pt}{0pt}{ink!30}]
+{\sffamily\bfseries\color{sNavy} Abstract}\par\smallskip
+Financial markets hear three voices: what institutions \emph{say}, what the media \emph{echoes}, and what capital \emph{does}. This paper develops a theory of the disagreement between them and of how to trade it.
+
+The central result explains \emph{false alarms}. An institution that trades while addressing a partly credulous crowd finds it optimal to talk an asset down while buying it, and this happens in an explicit region of three parameters: how much the crowd believes, how much trading moves prices, and how costly misreporting is. A distribution-free identity then shows that the observable covariance between words and deeds decides whether institutional statements should be followed or faded. Media virality determines which kind of manipulation arises, and when trust is learned over time it can cycle and even become chaotic.
+
+On the measurement side, we give exact tools to separate new information from repetition using both timing and meaning, to align text embeddings with market outcomes, and to detect whether money moved before the narrative. Every closed form is confirmed numerically, and a tested open-source implementation accompanies the paper.
+
+\medskip
+{\sffamily\small\textbf{Keywords:} investor sentiment \textbullet\ strategic communication \textbullet\ market manipulation \textbullet\ Hawkes processes \textbullet\ contrastive learning \textbullet\ path signatures \textbullet\ conformal prediction\par}
+{\sffamily\small\textbf{JEL:} G12, G14, G41, C45, C58 \qquad \textbf{MSC 2020:} 91G15, 91B44, 60G55, 62M20\par}
+\end{tcolorbox}
+
+\begin{keybox}{Highlights}
+\begin{itemize}[leftmargin=1.2em,itemsep=2pt,topsep=0pt]
+  \item Talking an asset down while buying it is \emph{optimal}, not merely possible, when $\varphi^2<2\lambda k<\varphi$.
+  \item Whether to trust institutional words is decided by one observable number: the sign of $\Cov(\text{Say},\text{Do})$.
+  \item Echo breeds false alarms in deep markets and exaggeration in shallow ones.
+  \item Adaptive trust converges only if $\lambda k>1$; otherwise it cycles and can become chaotic.
+  \item News and echo can be separated exactly by combining timing with meaning.
+\end{itemize}
+\end{keybox}
+
+\newpage
+
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+
+A respected bank publishes a gloomy call on a stock. Within hours the headlines multiply and social media repeats them. The price falls, but by less than the noise suggests, and a few weeks later it trades higher than before. Looking back at the disclosures, someone was buying all along.
+
+Practitioners call such episodes \emph{false alarms}, and many suspect that large institutions sometimes create them in order to buy cheaply. Proving intent is neither possible nor necessary. What \emph{is} possible is to measure, as events unfold, the disagreement between three observable voices (\cref{tab:voices}).
+
+\begin{table}[h]
+\centering
+\caption{\textbf{The three voices of a market.}}
+\label{tab:voices}
+\small
+\begin{tabularx}{0.92\linewidth}{@{}>{\raggedright}p{1.7cm}>{\raggedright}p{4.4cm}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textsf{Voice} & \textsf{What it is} & \textsf{Where it is observed} \\
+\midrule
+\SAY & what institutions publicly claim & ratings, target prices, research notes, management tone \\
+\ECHO & what the media repeats and amplifies & article volume, syndication, social posts, emotional intensity \\
+\DO & what capital actually does & insider trades, holdings, futures positioning, options flow, price \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\Cref{fig:teaser}a sketches the pattern we want to understand. Positioning builds first. Then the alarm arrives, the price falls far less than the alarm implies, and it recovers.
+
+\begin{figure}[t]
+\centering
+\panel{a}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}
+\begin{groupplot}[sci,
+  group style={group size=1 by 3, vertical sep=5pt, xticklabels at=edge bottom},
+  width=13.6cm, height=2.5cm, xmin=0, xmax=30, ytick=\empty,
+  xtick={0,10,20,30}, no markers, samples=140, domain=0:30,
+  ylabel style={align=center, font=\sffamily\scriptsize}, clip=false]
+\nextgroupplot[ymin=-1.3, ymax=0.35]
+  \addplot[sGray!60, thin, dashed, forget plot] coordinates {(7,-1.3) (7,0.35)};
+  \addplot[sGray!60, thin, dashed, forget plot] coordinates {(11,-1.3) (11,0.35)};
+  \addplot[echo] {-exp(-((x-11)^2)/5)};
+  \node[lbl, text=echo, anchor=west, font=\sffamily\tiny\bfseries] at (axis cs:17,-0.55) {headline tone};
+  \node[numb] at (axis cs:13.6,-0.95) {2};
+\nextgroupplot[ymin=-0.2, ymax=1.3]
+  \addplot[sGray!60, thin, dashed, forget plot] coordinates {(7,-0.2) (7,1.3)};
+  \addplot[sGray!60, thin, dashed, forget plot] coordinates {(11,-0.2) (11,1.3)};
+  \addplot[do] {1/(1+exp(-(x-7)/1.4))};
+  \node[lbl, text=do, anchor=west, font=\sffamily\tiny\bfseries] at (axis cs:17,0.55) {institutional positioning};
+  \node[numb] at (axis cs:4.6,0.62) {1};
+\nextgroupplot[ymin=95, ymax=106, xlabel={trading days}]
+  \addplot[sGray!60, thin, dashed, forget plot] coordinates {(7,95) (7,106)};
+  \addplot[sGray!60, thin, dashed, forget plot] coordinates {(11,95) (11,106)};
+  \addplot[ink] {100 - 2.2*exp(-((x-11.5)^2)/4) + 4.5/(1+exp(-(x-19)/2.5))};
+  \node[numb] at (axis cs:11.5,96.4) {3};
+  \node[numb] at (axis cs:24,102.9) {4};
+  \node[lbl, text=ink, anchor=west, font=\sffamily\tiny\bfseries] at (axis cs:0.5,103.5) {price};
+\end{groupplot}
+\end{tikzpicture}\end{adjustbox}
+
+\vspace{6pt}
+\begin{minipage}[t]{0.48\linewidth}
+\panel{b}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[
+  cell/.style={draw=white, line width=1.6pt, minimum width=3.0cm, minimum height=1.4cm, align=center, font=\sffamily\footnotesize},
+  head/.style={font=\sffamily\scriptsize\bfseries, align=center, text=ink}]
+\node[cell, fill=good!16] (a) at (0,0) {\textbf{false alarm}\\[1pt] fade fear: buy};
+\node[cell, fill=echo!13] (b) at (3.05,0) {\textbf{false euphoria}\\[1pt] fade hype: sell};
+\node[cell, fill=echo!6] (c) at (0,-1.45) {\textbf{real bad news}\\[1pt] follow: sell};
+\node[cell, fill=good!7] (d) at (3.05,-1.45) {\textbf{real good news}\\[1pt] follow: buy};
+\node[head, above=1pt of a] {\textcolor{echo}{bearish} story};
+\node[head, above=1pt of b] {\textcolor{good}{bullish} story};
+\node[head, rotate=90, anchor=south, align=center] at ($(a.west)+(-0.05,0)$) {money\\opposes};
+\node[head, rotate=90, anchor=south, align=center] at ($(c.west)+(-0.05,0)$) {money\\confirms};
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\panel{c}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[scale=0.82]
+\fill[good!13] (-3,0) rectangle (0,3);
+\fill[echo!11] (0,-3) rectangle (3,0);
+\fill[ink!4] (0,0) rectangle (3,3);
+\fill[ink!4] (-3,-3) rectangle (0,0);
+\draw[-{Stealth[length=1.6mm]}, ink!75, line width=0.5pt] (-3.1,0) -- (3.3,0) node[right, lbl] {\SAY};
+\draw[-{Stealth[length=1.6mm]}, ink!75, line width=0.5pt] (0,-3.1) -- (0,3.3) node[above, lbl] {\DO};
+\draw[dashed, sGray, line width=0.6pt] (-3,-3) -- (3,3);
+\node[lbl, text=sGray, anchor=west, font=\sffamily\tiny] at (1.55,2.6) {$\hat x=\gamma m$};
+\node[lbl, text=good!80!black, align=center, font=\sffamily\tiny\bfseries] at (-1.55,2.35) {talks bearish,\\ buys};
+\node[lbl, text=echo, align=center, font=\sffamily\tiny\bfseries] at (1.55,-2.35) {talks bullish,\\ sells};
+\foreach \p in {(0.8,1.0),(1.5,1.2),(2.0,2.3),(-1.0,-0.8),(-2.1,-1.7),(0.3,0.6),(-1.3,-1.6),(2.3,1.6),(0.9,-0.6),(-0.4,-0.9),(1.2,2.0)}
+  \fill[sGray!80] \p circle (2.2pt);
+\fill[say] (-2.1,1.2) circle (3.2pt);
+\draw[{Stealth[length=1.5mm]}-{Stealth[length=1.5mm]}, say, line width=0.8pt] (-2.1,1.2) -- (-0.45,-0.45);
+\node[lbl, text=say, anchor=east, font=\sffamily\tiny] at (-1.4,0.35) {gap};
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}
+\caption{\textbf{Three voices, one decision.} \textbf{a},~The false-alarm pattern (stylised): positioning builds (1) before the alarm (2); the price falls far less than the alarm implies (3), then recovers (4). \textbf{b},~The narrative alone never decides the trade; its agreement with money and price does. \textbf{c},~The Say--Do plane. The optimal forecast falls with the signed distance from the line $\hat x=\gamma m$ (\cref{thm:saydo}); the top-left quadrant is the false-alarm zone.}
+\label{fig:teaser}
+\end{figure}
+
+Two principles organise the paper.
+
+\begin{keybox}{Two principles}
+\textbf{Deeds over words.} When \SAY\ and \DO\ disagree, trust \DO. We show that the \emph{sign} of the covariance between words and deeds decides whether words should be followed or faded.
+
+\smallskip
+\textbf{Fade the echo, follow the news.} Repetition adds attention but no information, so its price effect must unwind. New information that the crowd under-weights keeps moving the price.
+\end{keybox}
+
+Neither principle amounts to blind contrarianism. Prices drift after genuine news \citep{chan2003}, so a rule that always fades the headlines loses money. The theory instead identifies which of the four cells in \cref{fig:teaser}b a given event belongs to.
+
+\paragraph{What is new} The results we believe to be new are:
+\begin{enumerate}
+  \item \textbf{An endogenous theory of false alarms} (\cref{sec:strategic}). A closed-form model of optimal speech while trading shows exactly when an institution talks an asset down while buying it, and when it exaggerates while selling.
+  \item \textbf{The Say--Do covariance identity} (\cref{thm:identity}). It holds for any distribution and turns an observable statistic into a follow-or-fade switch.
+  \item \textbf{How virality shapes manipulation} (\cref{prop:virality}) and \textbf{how trust can cycle} (\cref{thm:cycles}), with explicit thresholds.
+  \item \textbf{Semantic declustering} (\cref{thm:semantic}): an exact way to separate news from echo that combines timing with meaning.
+  \item \textbf{Guarantees for market-aligned text embeddings} (\cref{thm:racl,thm:robustnn}), \textbf{absorption} as the gap between implied and actual price moves (\cref{thm:absorption}), and \textbf{lead--lag} measured by L\'evy area (\cref{thm:levy}).
+\end{enumerate}
+The Gaussian results of \cref{sec:model} are clean multi-channel statements of Bayesian updating, and the tools for regime detection, calibration and position sizing (\cref{app:extra}) are classical. They are included so that the paper is self-contained.
+
+\paragraph{How to read this paper} \Cref{sec:model} builds the simplest market in which the three voices interact. \Cref{sec:strategic} lets institutions choose what to say, which is where false alarms come from. \Cref{sec:measure} turns the theory into measurements, and \cref{sec:decisions} combines them into a decision. \Cref{sec:evidence} checks every result numerically. Each main result is followed by a short plain-language reading, and all proofs are in \cref{app:proofs}.
+
+% =====================================================================
+\section{Background}\label{sec:related}
+
+\paragraph{Sentiment and prices} Media pessimism predicts short-term price pressure followed by reversal \citep{tetlock2007}. Financial text needs domain-specific measurement \citep{loughran2011}. Sentiment matters most where arbitrage is hard and risky \citep{delong1990,shleifer1997,baker2006}, and attention drives the demand of less-informed investors \citep{barber2008,da2011}. Under- and overreaction can coexist in one market \citep{hong1999}, and the same news is read differently in different states of the world \citep{veronesi1999}. Supervised text factors and language models now predict returns \citep{ke2019,araci2019,lopezlira2023}, although pretrained models can leak future information into backtests \citep{glasserman2023}.
+
+\paragraph{Informed trading and strategic communication} Order flow reveals private information \citep{kyle1985,glosten1985}. Volume--return dynamics separate informed trades from hedging \citep{llorente2002}. Sophisticated traders exploit predictable flow \citep{brunnermeier2005}, short sellers process public news better than others \citep{engelberg2012}, and promotional articles move prices \citep{kogan2023}. On the communication side, cheap talk \citep{crawford1982}, costly talk with credulous listeners \citep{kartik2007}, manipulation by informed ``gurus'' \citep{benabou1992} and trading on rumours \citep{vanbommel2003} study how informed agents shape beliefs.
+
+\paragraph{Tools} We use Hawkes processes \citep{hawkes1971} and their cluster representation \citep{hawkesoakes1974}, which underlies stochastic declustering \citep{zhuang2002} and is standard in finance \citep{bacry2015}. We also use contrastive representation learning \citep{oord2018,reimers2019}, the linear representation hypothesis \citep{park2023}, L\'evy area and path signatures \citep{levy1940,lyons1998,chevyrev2016}, cobweb learning and period-doubling \citep{ezekiel1938,evans2001,may1976}, and the square-root impact law \citep{bouchaud2018}.
+
+% =====================================================================
+\section{A Market with Three Voices}\label{sec:model}
+
+We begin with the simplest market in which the three voices interact. The goal is not realism but \emph{signs}: which signals should be followed, which should be faded, and why.
+
+\subsection{Setup}
+
+A stock has a true value $v$. The public receives several channels about it: an institutional statement, independent news, and media repetition. A crowd moves the price in response to these channels, while an informed trader who knows $v$ trades against any mispricing. \Cref{fig:dag} shows who influences whom.
+
+\begin{assumption}[Signals]\label{ass:signals}
+Value is $v\sim\N(0,\sigma_v^2)$. The public channels are $\y=\h v+\bm\nu\in\R^K$, where $\bm\nu\sim\N(\bm0,\Sigma_\nu)$ is independent of $v$ and $\Sigma_y=\sigma_v^2\h\h^\top+\Sigma_\nu\succ0$.
+\end{assumption}
+
+\begin{assumption}[Prices]\label{ass:price}
+Noise traders submit $u\sim\N(0,\sigma_u^2)$, independent of everything else. Informed traders submit $x=\beta(v-p)$ with $\beta>0$. The price is
+\[
+  p=\bphi^\top\y+\lambda(x+u),\qquad \lambda>0,
+\]
+where the vector $\bphi$ collects the crowd's \emph{narrative multipliers}: how strongly the price responds to each channel.
+\end{assumption}
+
+\begin{figure}[t]
+\centering
+\begin{adjustbox}{scale=1.25,max width=\linewidth}\begin{tikzpicture}[
+  lat/.style={circle, draw=ink!70, line width=0.6pt, minimum size=0.72cm, font=\small, fill=ink!5},
+  obs/.style={rectangle, rounded corners=2pt, line width=0.7pt, minimum width=1.35cm, minimum height=0.56cm, align=center, font=\sffamily\scriptsize},
+  arr/.style={-{Stealth[length=1.6mm]}, line width=0.6pt, ink!70}]
+\node[lat] (v) at (0,0) {$v$};
+\node[obs, draw=say, fill=say!8, text=say] (m) at (2.1,0.95) {\textbf{Say} $m$};
+\node[obs, draw=do, fill=do!5, text=do] (n) at (2.1,0) {news $n$};
+\node[obs, draw=do, fill=do!10, text=do] (x) at (2.1,-0.95) {\textbf{Do} $x$};
+\node[obs, draw=echo, fill=echo!8, text=echo] (e) at (4.1,0.95) {\textbf{Echo} $e$};
+\node[obs, draw=ink!70, fill=ink!5, text=ink, minimum width=1.1cm] (p) at (5.9,0) {price $p$};
+\node[lat, fill=white] (u) at (7.5,0) {$u$};
+\draw[arr] (v) -- (m); \draw[arr] (v) -- (n); \draw[arr] (v) -- (x);
+\draw[arr] (m) -- (e);
+\draw[arr] (e) -- (p); \draw[arr] (n) -- (p); \draw[arr] (x) -- (p); \draw[arr] (u) -- (p);
+\draw[arr] (m.north east) to[out=25,in=110] (p.north);
+\draw[arr, dashed, sGray] (p.south) to[out=-100,in=0] node[below, lbl, text=sGray, pos=0.6] {$x=\beta(v-p)$} (x.east);
+\end{tikzpicture}\end{adjustbox}
+\caption{\textbf{Information structure.} Echo is a downstream copy (a ``garbling'') of institutional speech, news is an independent signal of value, and informed demand responds to the price (dashed).}
+\label{fig:dag}
+\end{figure}
+
+Three quantities appear throughout. The \emph{Bayes weights} $\w^\star=\sigma_v^2\Sigma_y^{-1}\h$ describe how a perfectly rational observer would read the channels, so that $\E[v\mid\y]=\w^{\star\top}\y$. The number $\kappa=(1+\lambda\beta)^{-1}\in(0,1)$ measures how much mispricing survives informed trading. And $\sigma^2_{v|y}=\Var(v\mid\y)$ is the uncertainty that remains after reading the news. The forward return is $r=v-p$, which works out to $r=\kappa(v-\bphi^\top\y-\lambda u)$.
+
+\subsection{Follow or fade}
+
+The first question is simple: after a piece of news, should we expect the price to keep going or to come back?
+
+\begin{theorem}[Follow or fade]\label{thm:followfade}
+Under \cref{ass:signals,ass:price},
+\[
+  \E[r\mid\y]=\kappa\,(\w^\star-\bphi)^\top\y,\qquad \Var(r\mid\y)=\kappa^2\big(\sigma^2_{v|y}+\lambda^2\sigma_u^2\big)\eqqcolon\varsigma^2 .
+\]
+Returns load negatively on channel $k$ (\emph{fade}) if and only if $\varphi_k>w^\star_k$.
+\end{theorem}
+
+\begin{inwords}
+Compare how much the crowd reacts to a channel with how much that channel is actually worth. If the crowd overreacts, the move reverses; if it underreacts, the move continues.
+\end{inwords}
+
+Two special cases carry the paper's second principle.
+
+\begin{corollary}[Fade the echo]\label{cor:echo}
+If the echo channel is a garbling of the others, $e=\bm a^\top\y_{-e}+\xi$ with independent noise $\xi$ of positive variance, then $w^\star_e=0$ and the return loading on $e$ is exactly $-\kappa\varphi_e$.
+\end{corollary}
+
+\begin{corollary}[Follow the news]\label{cor:news}
+If a news channel is an independent signal of value, $n=v+\nu_n$, then $w^\star_n\in(0,1)$, and returns drift in the direction of $n$ whenever $\varphi_n<w^\star_n$.
+\end{corollary}
+
+\begin{inwords}
+A repeated story is worth nothing beyond the original, so whatever it moves is borrowed and must be returned. A genuinely new story that the crowd under-prices keeps pushing the price in its direction.
+\end{inwords}
+
+\subsection{Deeds over words}
+
+Suppose we can also observe, with noise, what informed capital is doing: a positioning proxy $\hat x=x+\xi_x$ with $\Var\xi_x=\sigma_x^2$.
+
+\begin{theorem}[Say--Do gap]\label{thm:saydo}
+Let $c_x=\beta\varsigma^2/(\beta^2\varsigma^2+\sigma_x^2)$ and $\theta=\sigma_x^2/(\beta^2\varsigma^2+\sigma_x^2)$. Then
+\[
+  \E[r\mid\y,\hat x]=\theta\kappa(\w^\star-\bphi)^\top\y+c_x\hat x,\qquad \Var(r\mid\y,\hat x)=\theta\varsigma^2<\varsigma^2 .
+\]
+If the institutional channel $m=y_1$ is over-weighted by the crowd ($\varphi_1>w^\star_1$), the forecast depends on words and deeds only through $-c_x(\gamma m-\hat x)$, with $\gamma=\theta\kappa(\varphi_1-w^\star_1)/c_x>0$.
+\end{theorem}
+
+\begin{inwords}
+Watching what money does always sharpens the forecast. When words are over-believed, the best forecast is a weighted \emph{gap} between what is said and what is done, with an explicit exchange rate $\gamma$. ``Talks bearish, buys'' is bullish.
+\end{inwords}
+
+\subsection{Absorption: did someone quietly buy?}\label{sec:absorption}
+
+The \emph{absorption} of a narrative is the price move net of the move the narrative implied: $a=p-\bphi^\top\y$. If the story implied a 6\% fall and the price fell 2\%, the missing 4\% is absorption (\cref{fig:absorb}a).
+
+\begin{theorem}[Absorption sign]\label{thm:absorption}
+$\E[r\mid\y,a]=\E[r\mid\y]+c_A\big(a-\E[a\mid\y]\big)$, where
+\[
+  c_A=\frac{\beta\sigma^2_{v|y}-\lambda\sigma_u^2}{\lambda\big(\beta^2\sigma^2_{v|y}+\sigma_u^2\big)} .
+\]
+Absorption predicts continuation if and only if $\beta\sigma^2_{v|y}>\lambda\sigma_u^2$, and reversal otherwise.
+\end{theorem}
+
+\begin{lemma}[Robustness]\label{lem:robust}
+For any estimate $\hat\bphi$ of the multipliers, $\hat a=p-\hat\bphi^\top\y$ carries exactly the same information as $a$ once $\y$ is known.
+\end{lemma}
+
+\begin{inwords}
+If informed buyers are the ones absorbing the selling, the price will follow them. If the absorption is just noise, it will fade. Which case holds depends on one comparison, shown in \cref{fig:absorb}b. At the classical equilibrium of \citet{kyle1985}, $c_A=\tfrac12$: absorption is informative. The lemma means that we do not need to know the crowd's reaction exactly for the signal to work.
+\end{inwords}
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{0.44\linewidth}
+\panel{a}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[xscale=0.44, yscale=0.46]
+\draw[ink!75, line width=0.5pt] (0,0) -- (8.4,0);
+\node[lbl, anchor=south west, font=\sffamily\tiny] at (4.0,0.1) {0\%};
+\fill[echo!16] (0.6,0) rectangle (2.8,-6);
+\draw[echo, line width=0.7pt, dashed] (0.6,0) rectangle (2.8,-6);
+\fill[ink!85] (4.0,0) rectangle (6.2,-1.9);
+\node[lbl, align=center, anchor=north, font=\sffamily\tiny] at (1.7,-6.2) {implied\\ $-6.0\%$};
+\node[lbl, align=center, anchor=north, font=\sffamily\tiny] at (5.1,-6.2) {actual\\ $-1.9\%$};
+\draw[ink!50, dotted] (2.8,-6) -- (7.0,-6);
+\draw[ink!50, dotted] (6.2,-1.9) -- (7.0,-1.9);
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}, line width=0.7pt, good] (7.1,-6) -- (7.1,-1.9);
+\node[lbl, text=good, anchor=west, align=left, font=\sffamily\tiny\bfseries] at (7.4,-3.95) {absorbed};
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}
+\panel{b}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}
+\begin{axis}[sci, width=6.3cm, height=5.1cm, xmin=0, xmax=2, ymin=0, ymax=2,
+  xlabel={informed $\beta\sigma^2_{v|y}$}, ylabel={noise $\lambda\sigma_u^2$},
+  xtick=\empty, ytick=\empty, clip=false, axis on top]
+\addplot[name path=diag, ink, line width=0.7pt, domain=0:2] {x};
+\addplot[name path=bottom, draw=none, domain=0:2] {0};
+\addplot[name path=top, draw=none, domain=0:2] {2};
+\addplot[good!16] fill between[of=diag and bottom];
+\addplot[echo!12] fill between[of=top and diag];
+\node[lbl, text=good!85!black, align=center, font=\sffamily\tiny\bfseries] at (axis cs:1.5,0.42) {continuation\\ $c_A>0$};
+\node[lbl, text=echo, align=center, font=\sffamily\tiny\bfseries] at (axis cs:0.55,1.5) {reversal\\ $c_A<0$};
+\fill[do] (axis cs:1,0.5) circle (1.8pt);
+\node[lbl, text=do, anchor=north, font=\sffamily\tiny] at (axis cs:1,0.44) {Kyle};
+\end{axis}
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}
+\caption{\textbf{Absorption.} \textbf{a},~The narrative implied a 6\% fall; the price fell 1.9\%. \textbf{b},~Phase diagram of \cref{thm:absorption}: absorption signals a hidden buyer only where informed trading dominates noise. The dot marks Kyle's equilibrium.}
+\label{fig:absorb}
+\end{figure}
+
+This result is close in spirit to \citet{llorente2002}, where high-volume returns continue when informed trading dominates and reverse when hedging dominates. The difference is that we condition on the \emph{narrative}.
+
+% =====================================================================
+\section{Why False Alarms Happen}\label{sec:strategic}
+
+So far the institution's statement was taken as given. We now let the institution \emph{choose} what to say while it trades. This is where false alarms come from.
+
+\subsection{An institution that speaks while it trades}
+
+\begin{assumption}[Strategic institution]\label{ass:strategic}
+An institution knows $v$, which may have any distribution with mean $0$ and variance $\sigma_v^2<\infty$. It publishes a message $m$ and trades $x$. The public sees $\tilde m=m+\varepsilon$, where $\varepsilon$ has mean zero and variance $\sigma_\varepsilon^2$ and is independent of $v$. The price is $p=\varphi\tilde m+\lambda x$, where $\varphi\ge0$ is the crowd's \emph{credulity}. Misreporting costs $\tfrac k2(m-v)^2$ (legal and reputational risk). The institution maximises
+\[
+  J(x,m)=x\,(v-\varphi m-\lambda x)-\tfrac k2\,(m-v)^2 .
+\]
+\end{assumption}
+
+The institution faces a simple trade-off. Its message moves the price at which it trades, but lying is costly. One number summarises the market environment: the \emph{deterrence--impact product} $a\coloneqq2\lambda k$.
+
+\begin{theorem}[Optimal speech and trade]\label{thm:speech}
+$J$ has a unique maximiser if and only if $a>\varphi^2$. It is linear in value, $m^\ast=\psi v$ and $x^\ast=\chi v$, with
+\[
+  \psi=\frac{a-\varphi}{a-\varphi^2},\qquad \chi=\frac{k(1-\varphi)}{a-\varphi^2}.
+\]
+If $a<\varphi^2$, the objective is unbounded: only position limits contain manipulation.
+\end{theorem}
+
+The slopes $\psi$ and $\chi$ tell us how the institution speaks and trades per unit of good news. Their signs produce a complete taxonomy (\cref{tab:taxonomy} and \cref{fig:regimes}a).
+
+\begin{corollary}[Taxonomy of speech]\label{cor:taxonomy}
+Let $a>\varphi^2$. The institution is in exactly one of the four regimes of \cref{tab:taxonomy}.
+\end{corollary}
+
+\begin{table}[h]
+\centering
+\caption{\textbf{Four ways to speak while trading} (for good news, $v>0$).}
+\label{tab:taxonomy}
+\small
+\begin{tabularx}{0.95\linewidth}{@{}l>{\raggedright}p{3.2cm}ll>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textsf{Regime} & \textsf{Condition} & \textsf{Speech} & \textsf{Trade} & \textsf{What it looks like} \\
+\midrule
+truth & $\varphi=1$ & $\psi=1$ & $\chi=0$ & says what it knows, does not trade \\
+shading & $\varphi<1$, $a>\varphi$ & $0<\psi<1$ & buys & understates good news and buys \\
+\textcolor{echo}{\textbf{false alarm}} & $\varphi^2<a<\varphi<1$ & $\psi<0$ & buys & \textbf{talks the asset down while buying it} \\
+\textcolor{sMagenta}{\textbf{exaggeration}} & $\varphi>1$ & $\psi>1$ & sells & overstates and sells into the hype \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{inwords}
+False alarms appear when the crowd is fairly credulous and lying is cheap relative to price impact, but not so cheap that manipulation becomes unbounded. They occupy a thin wedge of the parameter space. The mirror image, pumping and dumping, appears when the crowd over-believes ($\varphi>1$).
+\end{inwords}
+
+\subsection{Words, deeds and returns}
+
+The next result is the most useful one in practice, because it needs no model of how value is distributed.
+
+\begin{theorem}[Say--Do covariance identity]\label{thm:identity}
+Under \cref{ass:strategic}, let the message rule $m(v)$ be \emph{arbitrary}, and let the institution trade optimally given its message. Then, path by path, $r=\lambda x-\varphi\varepsilon$. Hence, for any distribution of $v$,
+\[
+  \Cov(r,\tilde m)=\lambda\,\Cov(x,\tilde m)-\varphi\,\sigma_\varepsilon^2,\qquad \E[r\mid x]=\lambda x .
+\]
+In equilibrium, $\Cov(x,\tilde m)=\psi\chi\,\sigma_v^2$, which is negative exactly in the false-alarm and exaggeration regimes.
+\end{theorem}
+
+\begin{keybox}{Why the identity matters}
+Both sides can be estimated from data, and no distributional assumption is needed. The rolling sign of $\widehat{\Cov}(\text{Say},\text{Do})$ tells us whether institutional words should be followed or faded. Deeds are always followed, with slope equal to price impact.
+\end{keybox}
+
+\subsection{How virality shapes manipulation}
+
+Media echo amplifies every message. If each article moves the price by $\varphi_0$ per unit of message and a Hawkes cascade with branching ratio $n\in[0,1)$ repeats it, the expected cascade size is $(1-n)^{-1}$ (\cref{prop:branching}). The effective credulity is therefore $\varphi=\varphi_0/(1-n)$. More virality means more credulity.
+
+\begin{proposition}[Manipulation dichotomy]\label{prop:virality}
+Let $\varphi_0\in(0,1)$ and call a regime \emph{manipulative} if $\Cov(\text{Say},\text{Do})<0$.
+\begin{enumerate}[label=(\roman*)]
+  \item In a \emph{deep} market ($a<1$), the only manipulative regime is the false alarm. It occurs if and only if $\max\{0,\,1-\varphi_0/a\}<n<1-\varphi_0/\sqrt a$.
+  \item In a \emph{shallow} market ($a>1$), it is exaggeration. It occurs if and only if $1-\varphi_0<n<1-\varphi_0/\sqrt a$.
+  \item Above $n=1-\varphi_0/\sqrt a$ no bounded optimum exists.
+\end{enumerate}
+\end{proposition}
+
+\begin{inwords}
+Virality does not create one kind of manipulation; it creates the kind the market structure allows. In liquid markets with low impact, echo makes talking down and buying optimal. In thin markets, it makes pumping and dumping optimal. Both happen inside explicit windows of the echo share (\cref{fig:regimes}b).
+\end{inwords}
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{0.49\linewidth}
+\panel{a}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}
+\begin{axis}[sci, width=7.4cm, height=5.8cm, xmin=0, xmax=1.6, ymin=0, ymax=2.6,
+  xlabel={crowd credulity $\varphi$}, ylabel={deterrence--impact $a=2\lambda k$},
+  xtick={0,0.5,1,1.5}, ytick={0,1,2}, axis on top, clip=false]
+\addplot[name path=sq, ink, line width=0.7pt, domain=0:1.6, samples=60] {x^2};
+\addplot[name path=lin, ink, line width=0.6pt, dashed, domain=0:1, samples=2] {x};
+\addplot[name path=top, draw=none, domain=0:1.6, samples=2] {2.6};
+\addplot[name path=bot, draw=none, domain=0:1.6, samples=2] {0};
+\addplot[ink!7] fill between[of=sq and bot];
+\addplot[echo!30] fill between[of=lin and sq, soft clip={domain=0:1}];
+\addplot[good!15] fill between[of=top and lin, soft clip={domain=0:1}];
+\addplot[sMagenta!15] fill between[of=top and sq, soft clip={domain=1:1.6}];
+\draw[do, line width=1.2pt] (axis cs:1,1) -- (axis cs:1,2.6);
+\node[lbl, text=good!85!black, font=\sffamily\scriptsize\bfseries] at (axis cs:0.45,1.85) {shading};
+\node[lbl, text=echo, font=\sffamily\tiny\bfseries, align=center] at (axis cs:0.77,0.67) {false\\[-2pt]alarm};
+\node[lbl, text=sMagenta, font=\sffamily\scriptsize\bfseries, align=center] at (axis cs:1.33,2.2) {exaggerate\\ \& sell};
+\node[lbl, text=ink!60, font=\sffamily\tiny, align=center] at (axis cs:1.3,0.7) {unbounded\\ manipulation};
+\node[lbl, text=do, font=\sffamily\tiny\bfseries, anchor=west] at (axis cs:1.02,1.12) {truth};
+\draw[-{Stealth[length=1.6mm]}, echo, line width=0.7pt] (axis cs:0.12,0.12) -- (axis cs:0.52,0.12) node[right, lbl, text=echo, font=\sffamily\tiny] {virality};
+\end{axis}
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\panel{b}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}
+\begin{axis}[sci, width=7.4cm, height=5.8cm, xmin=0, xmax=0.7, ymin=-3.2, ymax=3.2,
+  xlabel={media branching ratio $n$}, ylabel={speech slope $\psi=\partial m^\ast/\partial v$},
+  xtick={0,0.2,0.4,0.6}, ytick={-2,0,1,2}, unbounded coords=jump,
+  legend style={at={(0.02,0.02)}, anchor=south west}]
+\fill[echo!14] (axis cs:0.3333,-3.2) rectangle (axis cs:0.4836,3.2);
+\fill[sMagenta!14] (axis cs:0.6,-3.2) rectangle (axis cs:0.6734,3.2);
+\addplot[ink!40, line width=0.4pt, forget plot] coordinates {(0,0) (0.7,0)};
+\addplot[ink!40, line width=0.4pt, dashed, forget plot] coordinates {(0,1) (0.7,1)};
+\addplot[echo, domain=0:0.478, samples=220, restrict y to domain=-3.3:3.3] {(0.6-0.4/(1-x))/(0.6-(0.4/(1-x))^2)};
+\addlegendentry{deep, $a=0.6$}
+\addplot[do, domain=0:0.668, samples=220, restrict y to domain=-3.3:3.3] {(1.5-0.4/(1-x))/(1.5-(0.4/(1-x))^2)};
+\addlegendentry{shallow, $a=1.5$}
+\node[lbl, text=echo, font=\sffamily\tiny\bfseries, align=center] at (axis cs:0.408,2.55) {false\\ alarm};
+\node[lbl, text=sMagenta, font=\sffamily\tiny\bfseries, align=center] at (axis cs:0.636,-2.4) {exag-\\ger-\\ation};
+\node[lbl, text=ink!60, font=\sffamily\tiny, anchor=south west] at (axis cs:0.01,1.02) {truth};
+\end{axis}
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}
+\caption{\textbf{Where false alarms live.} \textbf{a},~Regime map (\cref{thm:speech}, \cref{tab:taxonomy}). False alarms occupy the wedge $\varphi^2<a<\varphi$; echo amplification moves a market to the right. \textbf{b},~Speech slope against the media echo share ($\varphi_0=0.4$, \cref{prop:virality}). A deep market passes through a false-alarm window where the slope turns negative; a shallow market passes through an exaggeration window where it exceeds one.}
+\label{fig:regimes}
+\end{figure}
+
+\subsection{Trust that learns, and cycles}
+
+Suppose that after each round the crowd resets its credulity to what the last round's data suggest, namely the least-squares slope of value on message. This is a cobweb-type learning rule \citep{ezekiel1938,evans2001}, and it gives
+\[
+  \varphi_{t+1}=\frac{1}{\psi(\varphi_t)}=F_a(\varphi_t),\qquad F_a(\varphi)=\frac{a-\varphi^2}{a-\varphi}.
+\]
+
+\begin{theorem}[Credibility cycles]\label{thm:cycles}
+\begin{enumerate}[label=(\roman*)]
+  \item For $a>1$, truth ($\varphi=1$) is the only admissible resting point.
+  \item It is stable if and only if $a>2$, that is, $\lambda k>1$.
+  \item For $1<a<2$ there is exactly one $2$-cycle, $\varphi_\pm=\tfrac12\big(a\pm\sqrt{a(2-a)}\big)$ with $\varphi_-<1<\varphi_+$. Its multiplier is $(5a-9)/(a-1)$, so it is stable if and only if $\tfrac56<\lambda k<1$. Along the cycle the market alternates between under-trust (shading) and over-trust (exaggeration).
+  \item The cycle is born at $a=2$ and loses stability at $a=\tfrac53$, both through flip bifurcations.
+\end{enumerate}
+\end{theorem}
+
+\begin{inwords}
+Trust settles on the truth only when deterrence is strong enough. With moderate deterrence, the crowd alternates between believing too little and believing too much, and institutional behaviour swings between shading and exaggeration. With weak deterrence, the swings become chaotic and eventually trust collapses (\cref{fig:bifurcation}). The testable prediction is that the rolling Say--Do covariance should change sign from period to period in such markets.
+\end{inwords}
+
+\begin{figure}[t]
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}
+\begin{axis}[sci, width=11.8cm, height=6.6cm, xmin=1.55, xmax=2.4, ymin=0, ymax=1.35,
+  xlabel={deterrence--impact $a=2\lambda k$}, ylabel={long-run credulity $\varphi_t$},
+  xtick={1.6,1.8,2,2.2,2.4}, ytick={0,0.5,1}, clip=false]
+\fill[echo!8] (axis cs:1.55,0) rectangle (axis cs:1.6667,1.35);
+\fill[sViolet!9] (axis cs:1.6667,0) rectangle (axis cs:2,1.35);
+\fill[good!8] (axis cs:2,0) rectangle (axis cs:2.4,1.35);
+\addplot[only marks, mark=*, mark size=0.28pt, ink] coordinates {(1.565,0.014) (1.565,0.039) (1.565,0.053) (1.565,0.054) (1.565,0.209) (1.565,0.216) (1.565,0.238) (1.565,0.282) (1.565,0.435) (1.565,0.552) (1.565,0.637) (1.565,0.678) (1.565,0.692) (1.565,0.772) (1.565,0.775) (1.565,0.798) (1.565,0.815) (1.565,0.844) (1.565,0.934) (1.565,0.935) (1.565,0.941) (1.565,0.946) (1.565,0.954) (1.565,0.983) (1.565,1.009) (1.565,1.024) (1.565,1.028) (1.565,1.03) (1.565,1.033) (1.565,1.034) (1.565,1.072) (1.565,1.082) (1.565,1.089) (1.565,1.096) (1.565,1.097) (1.565,1.122) (1.565,1.126) (1.565,1.137) (1.565,1.158) (1.565,1.183) (1.565,1.21) (1.565,1.217) (1.565,1.221) (1.565,1.222) (1.565,1.244) (1.565,1.246) (1.565,1.249) (1.57,0.049) (1.57,0.05) (1.57,0.06) (1.57,0.096) (1.57,0.156) (1.57,0.176) (1.57,0.178) (1.57,0.184) (1.57,0.268) (1.57,0.294) (1.57,0.535) (1.57,0.571) (1.57,0.587) (1.57,0.662) (1.57,0.74) (1.57,0.75) (1.57,0.751) (1.57,0.753) (1.57,0.786) (1.57,0.796) (1.57,0.878) (1.57,0.903) (1.57,0.927) (1.57,0.94) (1.57,1.032) (1.57,1.037) (1.57,1.048) (1.57,1.059) (1.57,1.09) (1.57,1.093) (1.57,1.104) (1.57,1.105) (1.57,1.108) (1.57,1.131) (1.57,1.151) (1.57,1.154) (1.57,1.163) (1.57,1.21) (1.57,1.214) (1.57,1.228) (1.57,1.229) (1.57,1.232) (1.57,1.24) (1.57,1.245) (1.57,1.246) (1.57,1.247) (1.575,0.063) (1.575,0.069) (1.575,0.124) (1.575,0.133) (1.575,0.18) (1.575,0.185) (1.575,0.199) (1.575,0.204) (1.575,0.255) (1.575,0.33) (1.575,0.403) (1.575,0.444) (1.575,0.473) (1.575,0.618) (1.575,0.709) (1.575,0.715) (1.575,0.719) (1.575,0.741) (1.575,0.744) (1.575,0.75) (1.575,0.826) (1.575,0.839) (1.575,0.916) (1.575,0.924) (1.575,1.039) (1.575,1.043) (1.575,1.075) (1.575,1.08) (1.575,1.106) (1.575,1.108) (1.575,1.109) (1.575,1.116) (1.575,1.117) (1.575,1.119) (1.575,1.144) (1.575,1.178) (1.575,1.184) (1.575,1.192) (1.575,1.205) (1.575,1.218) (1.575,1.226) (1.575,1.227) (1.575,1.229) (1.575,1.23) (1.575,1.237) (1.575,1.238) (1.575,1.246) (1.575,1.247) (1.58,0.087) (1.58,0.09) (1.58,0.628) (1.58,0.644) (1.58,0.889) (1.58,0.894) (1.58,1.053) (1.58,1.055) (1.58,1.138) (1.58,1.142) (1.58,1.245) (1.585,0.109) (1.585,0.139) (1.585,0.14) (1.585,0.141) (1.585,0.223) (1.585,0.243) (1.585,0.256) (1.585,0.335) (1.585,0.342) (1.585,0.346) (1.585,0.409) (1.585,0.412) (1.585,0.416) (1.585,0.462) (1.585,0.471) (1.585,0.484) (1.585,0.553) (1.585,0.629) (1.585,0.652) (1.585,0.687) (1.585,0.819) (1.585,0.82) (1.585,0.821) (1.585,0.865) (1.585,1.066) (1.585,1.083) (1.585,1.084) (1.585,1.127) (1.585,1.137) (1.585,1.143) (1.585,1.162) (1.585,1.178) (1.585,1.181) (1.585,1.183) (1.585,1.192) (1.585,1.193) (1.585,1.194) (1.585,1.206) (1.585,1.208) (1.585,1.221) (1.585,1.224) (1.585,1.227) (1.585,1.239) (1.585,1.24) (1.585,1.244) (1.59,0.13) (1.59,0.131) (1.59,0.132) (1.59,0.133) (1.59,0.252) (1.59,0.254) (1.59,0.264) (1.59,0.268) (1.59,0.272) (1.59,0.462) (1.59,0.465) (1.59,0.467) (1.59,0.474) (1.59,0.476) (1.59,0.614) (1.59,0.621) (1.59,0.638) (1.59,0.642) (1.59,0.832) (1.59,0.833) (1.59,0.834) (1.59,0.836) (1.59,0.837) (1.59,1.078) (1.59,1.079) (1.59,1.141) (1.59,1.142) (1.59,1.147) (1.59,1.148) (1.59,1.181) (1.59,1.182) (1.59,1.183) (1.59,1.184) (1.59,1.22) (1.59,1.221) (1.59,1.222) (1.59,1.223) (1.59,1.224) (1.59,1.242) (1.59,1.243) (1.595,0.153) (1.595,0.167) (1.595,0.188) (1.595,0.225) (1.595,0.278) (1.595,0.297) (1.595,0.332) (1.595,0.349) (1.595,0.361) (1.595,0.374) (1.595,0.384) (1.595,0.388) (1.595,0.402) (1.595,0.408) (1.595,0.416) (1.595,0.434) (1.595,0.456) (1.595,0.508) (1.595,0.571) (1.595,0.604) (1.595,0.693) (1.595,0.752) (1.595,0.785) (1.595,0.806) (1.595,1.09) (1.595,1.097) (1.595,1.109) (1.595,1.127) (1.595,1.152) (1.595,1.161) (1.595,1.176) (1.595,1.187) (1.595,1.192) (1.595,1.195) (1.595,1.197) (1.595,1.198) (1.595,1.201) (1.595,1.202) (1.595,1.204) (1.595,1.206) (1.595,1.208) (1.595,1.212) (1.595,1.218) (1.595,1.221) (1.595,1.23) (1.595,1.236) (1.595,1.239) (1.595,1.241) (1.6,0.171) (1.6,0.173) (1.6,0.184) (1.6,0.203) (1.6,0.246) (1.6,0.26) (1.6,0.269) (1.6,0.289) (1.6,0.315) (1.6,0.339) (1.6,0.35) (1.6,0.358) (1.6,0.472) (1.6,0.486) (1.6,0.505) (1.6,0.546) (1.6,0.591) (1.6,0.625) (1.6,0.64) (1.6,0.664) (1.6,0.733) (1.6,0.763) (1.6,0.779) (1.6,0.782) (1.6,1.099) (1.6,1.1) (1.6,1.106) (1.6,1.116) (1.6,1.137) (1.6,1.144) (1.6,1.148) (1.6,1.157) (1.6,1.168) (1.6,1.178) (1.6,1.182) (1.6,1.185) (1.6,1.208) (1.6,1.21) (1.6,1.212) (1.6,1.216) (1.6,1.221) (1.6,1.224) (1.6,1.226) (1.6,1.228) (1.6,1.235) (1.6,1.238) (1.6,1.24) (1.605,0.191) (1.605,0.195) (1.605,0.2) (1.605,0.205) (1.605,0.21) (1.605,0.217) (1.605,0.253) (1.605,0.267) (1.605,0.281) (1.605,0.293) (1.605,0.306) (1.605,0.316) (1.605,0.552) (1.605,0.57) (1.605,0.59) (1.605,0.612) (1.605,0.635) (1.605,0.658) (1.605,0.716) (1.605,0.726) (1.605,0.735) (1.605,0.742) (1.605,0.749) (1.605,0.755) (1.605,1.109) (1.605,1.111) (1.605,1.114) (1.605,1.116) (1.605,1.119) (1.605,1.122) (1.605,1.14) (1.605,1.146) (1.605,1.152) (1.605,1.158) (1.605,1.163) (1.605,1.168) (1.605,1.218) (1.605,1.22) (1.605,1.222) (1.605,1.224) (1.605,1.226) (1.605,1.229) (1.605,1.235) (1.605,1.236) (1.605,1.237) (1.605,1.238) (1.605,1.239) (1.61,0.21) (1.61,0.291) (1.61,0.602) (1.61,0.731) (1.61,1.118) (1.61,1.156) (1.61,1.224) (1.61,1.238) (1.615,0.226) (1.615,0.279) (1.615,0.627) (1.615,0.71) (1.615,1.126) (1.615,1.151) (1.615,1.228) (1.615,1.237) (1.62,0.257) (1.62,0.667) (1.62,1.14) (1.62,1.233) (1.625,0.268) (1.625,0.656) (1.625,1.144) (1.625,1.233) (1.63,0.279) (1.63,0.644) (1.63,1.149) (1.63,1.233) (1.635,0.291) (1.635,0.632) (1.635,1.154) (1.635,1.232) (1.64,0.305) (1.64,0.618) (1.64,1.159) (1.64,1.231) (1.645,0.32) (1.645,0.603) (1.645,1.164) (1.645,1.23) (1.65,0.337) (1.65,0.586) (1.65,1.17) (1.65,1.228) (1.655,0.356) (1.655,0.565) (1.655,1.177) (1.655,1.226) (1.66,0.382) (1.66,0.54) (1.66,1.185) (1.66,1.222) (1.665,0.421) (1.665,0.5) (1.665,1.196) (1.665,1.215) (1.67,0.464) (1.67,1.206) (1.675,0.469) (1.675,1.206) (1.68,0.473) (1.68,1.207) (1.685,0.478) (1.685,1.207) (1.69,0.483) (1.69,1.207) (1.695,0.488) (1.695,1.207) (1.7,0.493) (1.7,1.207) (1.705,0.498) (1.705,1.207) (1.71,0.503) (1.71,1.207) (1.715,0.508) (1.715,1.207) (1.72,0.513) (1.72,1.207) (1.725,0.518) (1.725,1.207) (1.73,0.523) (1.73,1.207) (1.735,0.528) (1.735,1.207) (1.74,0.534) (1.74,1.206) (1.745,0.539) (1.745,1.206) (1.75,0.544) (1.75,1.206) (1.755,0.55) (1.755,1.205) (1.76,0.555) (1.76,1.205) (1.765,0.56) (1.765,1.205) (1.77,0.566) (1.77,1.204) (1.775,0.572) (1.775,1.203) (1.78,0.577) (1.78,1.203) (1.785,0.583) (1.785,1.202) (1.79,0.588) (1.79,1.202) (1.795,0.594) (1.795,1.201) (1.8,0.6) (1.8,1.2) (1.805,0.606) (1.805,1.199) (1.81,0.612) (1.81,1.198) (1.815,0.618) (1.815,1.197) (1.82,0.624) (1.82,1.196) (1.825,0.63) (1.825,1.195) (1.83,0.636) (1.83,1.194) (1.835,0.642) (1.835,1.193) (1.84,0.649) (1.84,1.191) (1.845,0.655) (1.845,1.19) (1.85,0.662) (1.85,1.188) (1.855,0.668) (1.855,1.187) (1.86,0.675) (1.86,1.185) (1.865,0.682) (1.865,1.183) (1.87,0.688) (1.87,1.182) (1.875,0.695) (1.875,1.18) (1.88,0.703) (1.88,1.177) (1.885,0.71) (1.885,1.175) (1.89,0.717) (1.89,1.173) (1.895,0.724) (1.895,1.171) (1.9,0.732) (1.9,1.168) (1.905,0.74) (1.905,1.165) (1.91,0.748) (1.91,1.162) (1.915,0.756) (1.915,1.159) (1.92,0.764) (1.92,1.156) (1.925,0.773) (1.925,1.152) (1.93,0.781) (1.93,1.149) (1.935,0.79) (1.935,1.145) (1.94,0.799) (1.94,1.141) (1.945,0.809) (1.945,1.136) (1.95,0.819) (1.95,1.131) (1.955,0.829) (1.955,1.126) (1.96,0.84) (1.96,1.12) (1.965,0.851) (1.965,1.114) (1.97,0.863) (1.97,1.107) (1.975,0.876) (1.975,1.099) (1.98,0.891) (1.98,1.089) (1.985,0.906) (1.985,1.079) (1.99,0.924) (1.99,1.066) (1.995,0.948) (1.995,1.047) (2.0,0.991) (2.0,1.009) (2.005,1.0) (2.01,1.0) (2.015,1.0) (2.02,1.0) (2.025,1.0) (2.03,1.0) (2.035,1.0) (2.04,1.0) (2.045,1.0) (2.05,1.0) (2.055,1.0) (2.06,1.0) (2.065,1.0) (2.07,1.0) (2.075,1.0) (2.08,1.0) (2.085,1.0) (2.09,1.0) (2.095,1.0) (2.1,1.0) (2.105,1.0) (2.11,1.0) (2.115,1.0) (2.12,1.0) (2.125,1.0) (2.13,1.0) (2.135,1.0) (2.14,1.0) (2.145,1.0) (2.15,1.0) (2.155,1.0) (2.16,1.0) (2.165,1.0) (2.17,1.0) (2.175,1.0) (2.18,1.0) (2.185,1.0) (2.19,1.0) (2.195,1.0) (2.2,1.0) (2.205,1.0) (2.21,1.0) (2.215,1.0) (2.22,1.0) (2.225,1.0) (2.23,1.0) (2.235,1.0) (2.24,1.0) (2.245,1.0) (2.25,1.0) (2.255,1.0) (2.26,1.0) (2.265,1.0) (2.27,1.0) (2.275,1.0) (2.28,1.0) (2.285,1.0) (2.29,1.0) (2.295,1.0) (2.3,1.0) (2.305,1.0) (2.31,1.0) (2.315,1.0) (2.32,1.0) (2.325,1.0) (2.33,1.0) (2.335,1.0) (2.34,1.0) (2.345,1.0) (2.35,1.0) (2.355,1.0) (2.36,1.0) (2.365,1.0) (2.37,1.0) (2.375,1.0) (2.38,1.0) (2.385,1.0) (2.39,1.0) (2.395,1.0) (2.4,1.0)};
+\addplot[sViolet, line width=0.9pt, dashed, domain=1.6667:2, samples=60] {(x+sqrt(x*(2-x)))/2};
+\addplot[sViolet, line width=0.9pt, dashed, domain=1.6667:2, samples=60] {(x-sqrt(x*(2-x)))/2};
+\addplot[ink!40, line width=0.4pt, dotted] coordinates {(1.55,1) (2.4,1)};
+\node[lbl, text=good!85!black, font=\sffamily\tiny\bfseries, anchor=south] at (axis cs:2.2,1.36) {trust converges};
+\node[lbl, text=sViolet, font=\sffamily\tiny\bfseries, anchor=south] at (axis cs:1.83,1.36) {2-cycle};
+\node[lbl, text=echo, font=\sffamily\tiny\bfseries, anchor=south] at (axis cs:1.608,1.36) {chaos};
+\end{axis}
+\end{tikzpicture}\end{adjustbox}
+\caption{\textbf{How trust learns.} Long-run credulity under adaptive trust (\cref{thm:cycles}). Dots show the attractor; dashed curves show the closed-form cycle $\varphi_\pm$. Trust converges when $a>2$, alternates when $\tfrac53<a<2$, and becomes chaotic below (numerical Lyapunov exponent $\approx0.10$ at $a=1.6$). For $a\lesssim1.56$ the orbit leaves the admissible set and credibility collapses.}
+\label{fig:bifurcation}
+\end{figure}
+
+\citet{benabou1992} derive credibility dynamics from Bayesian learning about a random honest type, and \citet{kartik2007} study costly talk with credulous listeners. The present model differs by coupling speech to trading in a linear--quadratic market, which makes the false-alarm region, the covariance identity and the bifurcation thresholds explicit and estimable.
+
+% =====================================================================
+\section{Measuring the Three Voices}\label{sec:measure}
+
+The theory needs three measurements: how much of the coverage is echo, how surprising a story is, and who moved first. This section provides each one with a guarantee.
+
+\subsection{Echo: separating news from repetition}\label{sec:echo}
+
+Let articles about an asset arrive at times $\tau_1<\dots<\tau_N$ with text embeddings $\z_j$. We model arrivals as a Hawkes process, in which every article briefly raises the chance of further articles:
+\[
+  \lambda(t)=\mu+\sum_{\tau_l<t}g(t-\tau_l),\qquad n=\int_0^\infty g<1 .
+\]
+In the cluster representation \citep{hawkesoakes1974}, every article is either \emph{news} (an ``immigrant'' arriving at rate $\mu$) or an \emph{echo} of an earlier article.
+
+\begin{proposition}[Echo share]\label{prop:branching}
+In the long run, the share of articles that are echoes equals the branching ratio $n$, and the average cascade has $(1-n)^{-1}$ articles.
+\end{proposition}
+
+Timing alone is a weak clue, because a reprint usually \emph{looks like} its parent. We therefore let meaning enter as well.
+
+\begin{assumption}[Marked cascade]\label{ass:marked}
+News embeddings are drawn independently from a density $f_0$. An echo of article $l$ has an embedding drawn from $f(\cdot\mid\z_l)$, for example the von Mises--Fisher density $f\propto e^{\varkappa\langle\z,\z_l\rangle}$, which concentrates near the parent.
+\end{assumption}
+
+\begin{theorem}[Semantic declustering]\label{thm:semantic}
+Given all arrival times and embeddings, the parent of each article is independent of the parents of the others, with
+\[
+  \Prob(\text{$j$ is news}\mid\cdot)=\frac{\mu f_0(\z_j)}{\Lambda_j},\qquad
+  \Prob(\text{$j$ echoes $l$}\mid\cdot)=\frac{g(\tau_j-\tau_l)\,f(\z_j\mid\z_l)}{\Lambda_j},
+\]
+where $\Lambda_j$ is the sum of the numerators over all candidates. The best estimates of the news and echo sentiment totals are
+\[
+  s^{\mathrm{new}}=\sum_jp_j\,s_j,\qquad s^{\mathrm{echo}}=\sum_j(1-p_j)\,s_j,\qquad p_j=\Prob(\text{$j$ is news}\mid\cdot).
+\]
+\end{theorem}
+
+\begin{inwords}
+Each article receives an exact probability of being news, based on when it arrived and how similar it is to what came before. The computation is causal (it uses only earlier articles) and costs one pass over the data. Ignoring meaning ($\varkappa=0$) recovers classical stochastic declustering \citep{zhuang2002}.
+\end{inwords}
+
+\begin{figure}[t]
+\centering
+\panel{a}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[scale=0.95,
+  newn/.style={circle, fill=do, inner sep=2.1pt},
+  echn/.style={circle, draw=echo, line width=0.7pt, fill=white, inner sep=1.7pt},
+  trig/.style={-{Stealth[length=1.2mm]}, echo!55, line width=0.4pt}]
+\draw[-{Stealth[length=1.6mm]}, ink!75, line width=0.5pt] (0,0) -- (12.2,0) node[right, lbl] {time};
+\node[newn] (a) at (1,0.5) {};
+\node[echn] (a1) at (1.6,1.1) {}; \node[echn] (a2) at (1.9,0.6) {}; \node[echn] (a3) at (2.3,1.5) {};
+\node[echn] (a4) at (2.6,0.9) {}; \node[echn] (a5) at (3.0,1.9) {}; \node[echn] (a6) at (3.3,1.2) {};
+\node[echn] (a7) at (3.7,0.7) {}; \node[echn] (a8) at (4.1,1.6) {};
+\draw[trig] (a) -- (a1); \draw[trig] (a) -- (a2); \draw[trig] (a1) -- (a3); \draw[trig] (a2) -- (a4);
+\draw[trig] (a3) -- (a5); \draw[trig] (a4) -- (a6); \draw[trig] (a4) -- (a7); \draw[trig] (a5) -- (a8);
+\node[newn] (b) at (7.5,0.5) {}; \node[echn] (b1) at (8.1,1.0) {}; \node[echn] (b2) at (8.6,0.6) {};
+\draw[trig] (b) -- (b1); \draw[trig] (b1) -- (b2);
+\node[newn] (c) at (10.5,0.5) {};
+\node[lbl, text=do, anchor=north, font=\sffamily\tiny] at (1,-0.1) {downgrade};
+\node[lbl, text=do, anchor=north, font=\sffamily\tiny] at (7.5,-0.1) {new data};
+\node[lbl, text=do, anchor=north, font=\sffamily\tiny] at (10.5,-0.1) {new data};
+\node[newn] at (6.0,2.2) {}; \node[lbl, anchor=west, font=\sffamily\tiny] at (6.15,2.2) {news};
+\node[echn] at (7.6,2.2) {}; \node[lbl, anchor=west, font=\sffamily\tiny] at (7.75,2.2) {echo};
+\begin{scope}[yshift=-2.9cm]
+\draw[-{Stealth[length=1.6mm]}, ink!75, line width=0.5pt] (0,0) -- (12.2,0) node[right, lbl] {time};
+\draw[-{Stealth[length=1.6mm]}, ink!75, line width=0.5pt] (0,0) -- (0,1.8) node[right, lbl] {intensity $\lambda(t)$};
+\draw[dashed, do, line width=0.5pt] (0,0.3) -- (12,0.3) node[right, lbl, text=do, font=\sffamily\tiny] {$\mu$};
+\draw[echo, line width=0.8pt, samples=300, domain=0:12] plot (\x, {0.3
+  + 0.42*(\x>1.0)*exp(-1.6*max(\x-1.0,0)) + 0.42*(\x>1.6)*exp(-1.6*max(\x-1.6,0))
+  + 0.42*(\x>1.9)*exp(-1.6*max(\x-1.9,0)) + 0.42*(\x>2.3)*exp(-1.6*max(\x-2.3,0))
+  + 0.42*(\x>2.6)*exp(-1.6*max(\x-2.6,0)) + 0.42*(\x>3.0)*exp(-1.6*max(\x-3.0,0))
+  + 0.42*(\x>3.3)*exp(-1.6*max(\x-3.3,0)) + 0.42*(\x>3.7)*exp(-1.6*max(\x-3.7,0))
+  + 0.42*(\x>4.1)*exp(-1.6*max(\x-4.1,0)) + 0.42*(\x>7.5)*exp(-1.6*max(\x-7.5,0))
+  + 0.42*(\x>8.1)*exp(-1.6*max(\x-8.1,0)) + 0.42*(\x>8.6)*exp(-1.6*max(\x-8.6,0))
+  + 0.42*(\x>10.5)*exp(-1.6*max(\x-10.5,0))});
+\end{scope}
+\end{tikzpicture}\end{adjustbox}
+
+\vspace{8pt}
+\panel{b}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[font=\sffamily, scale=1.3]
+\draw[-{Stealth[length=1.6mm]}, ink!75, line width=0.5pt] (0,0) -- (5.0,0) node[right, lbl] {time};
+\node[circle, fill=do, inner sep=2.1pt] (B) at (0.4,0) {};
+\node[circle, fill=sGray, inner sep=2.1pt] (A) at (2.8,0) {};
+\node[circle, draw=echo, line width=0.8pt, fill=white, inner sep=1.9pt] (C) at (4.5,0) {};
+\node[lbl, align=center, anchor=south, font=\sffamily\tiny] at (0.4,0.12) {B: earnings\\ warning, $-6$h};
+\node[lbl, align=center, anchor=south, font=\sffamily\tiny] at (2.8,0.12) {A: macro\\ story, $-20$m};
+\node[lbl, align=center, anchor=south, text=echo, font=\sffamily\tiny\bfseries] at (4.5,0.12) {C: near-copy\\ of B};
+\draw[-{Stealth[length=1.4mm]}, sGray, dashed, line width=0.6pt] (A) to[out=-40,in=-140] node[below, lbl, text=sGray, font=\sffamily\tiny] {timing} (C);
+\draw[-{Stealth[length=1.4mm]}, echo, line width=0.9pt] (B) to[out=-28,in=-152] node[below, lbl, text=echo, font=\sffamily\tiny] {meaning} (C);
+\begin{scope}[xshift=5.65cm, yshift=-1.25cm]
+\node[lbl, anchor=south, font=\sffamily\tiny\bfseries] at (0.95,2.25) {parent of C};
+\draw[ink!75, line width=0.5pt] (0,0) -- (1.95,0);
+\fill[ink!30] (0.05,0) rectangle (0.27,0.60); \fill[echo] (0.27,0) rectangle (0.49,0.10);
+\fill[ink!30] (0.70,0) rectangle (0.92,1.10); \fill[echo] (0.92,0) rectangle (1.14,0.14);
+\fill[ink!30] (1.35,0) rectangle (1.57,0.30); \fill[echo] (1.57,0) rectangle (1.79,1.76);
+\node[lbl, anchor=north, font=\sffamily\tiny] at (0.27,0) {news};
+\node[lbl, anchor=north, font=\sffamily\tiny] at (0.92,0) {A};
+\node[lbl, anchor=north, font=\sffamily\tiny] at (1.57,0) {B};
+\fill[ink!30] (0,-0.62) rectangle (0.16,-0.5); \node[lbl, anchor=west, font=\sffamily\tiny] at (0.18,-0.56) {timing};
+\fill[echo] (0,-0.86) rectangle (0.16,-0.74); \node[lbl, anchor=west, font=\sffamily\tiny] at (0.18,-0.8) {+ meaning};
+\end{scope}
+\end{tikzpicture}\end{adjustbox}
+\caption{\textbf{Separating news from echo.} \textbf{a},~A news article (blue) triggers a cascade of echoes (red); the arrival intensity jumps with each article and decays to the baseline $\mu$. \textbf{b},~Semantic declustering (\cref{thm:semantic}; illustrative numbers). Timing alone attributes article C to the most recent story, A. Adding meaning correctly identifies C as an echo of B.}
+\label{fig:echo}
+\end{figure}
+
+\subsection{A map of meaning aligned with markets}\label{sec:embeddings}
+
+A text embedding places each document on a sphere, $\z_j\in S^{D-1}$, so that similar texts lie close together. Generic embeddings cluster by \emph{topic}. For our purposes they should cluster by \emph{consequence}: stories that led to similar market reactions should be neighbours (\cref{fig:embed}).
+
+Let $\bm\rho_j$ collect what happened after story $j$ (abnormal returns at several horizons, abnormal volume, and the change in implied volatility). Write $S_{jk}=\langle\z_j,\z_k\rangle$ and $D_{jk}=\|\bm\rho_j-\bm\rho_k\|^2$. The return-aligned contrastive loss asks the embedding to reproduce outcome similarities:
+\[
+  \mathcal{L}(Z)=-\sum_j\sum_{k\neq j}q_{jk}\log p_{jk}(Z),\qquad q_{jk}\propto e^{-D_{jk}/2b^2},\quad p_{jk}(Z)\propto e^{S_{jk}/\tau},
+\]
+with both normalised over $k\neq j$.
+
+\begin{theorem}[Perfect alignment]\label{thm:racl}
+$\mathcal{L}(Z)\ge\sum_jH(q_{j\cdot})$, with equality if and only if $S_{jk}=c-\tfrac{\tau}{2b^2}D_{jk}$ for a constant $c$. At equality, $\|\z_j-\z_k\|^2=2(1-c)+\tfrac{\tau}{b^2}\|\bm\rho_j-\bm\rho_k\|^2$, so embedding neighbours are exactly outcome neighbours.
+\end{theorem}
+
+Training is never perfect, so the next result matters more in practice.
+
+\begin{theorem}[Certificate for imperfect training]\label{thm:robustnn}
+For any embedding $Z$, let $\epsilon_j=\KL\big(q_{j\cdot}\,\|\,p_{j\cdot}(Z)\big)$ be the loss left over at story $j$. If $q_{jk}-q_{jl}>\sqrt{2\epsilon_j}$, then $\|\z_j-\z_k\|<\|\z_j-\z_l\|$.
+\end{theorem}
+
+\begin{inwords}
+The leftover training loss tells us which comparisons we can trust. Whenever two outcomes differ clearly enough, the embedding is guaranteed to rank them correctly. This is what makes ``d\'ej\`a vu'' forecasting safe: we estimate the reaction a new story implies by averaging what happened after its nearest historical neighbours (\cref{prop:analog}), and the gap between that and the actual reaction is the absorption of \cref{sec:absorption}.
+\end{inwords}
+
+Sentiment is read as a projection onto a direction $\w_s^\perp=(I-UU^\top)\w_s$ from which topic directions $U$ have been removed, so that bad news in banking and bad news in energy are comparable. Surprise is measured against the \emph{expected} next story $\hat\z$, and its Mahalanobis size is $\chi^2$-calibrated (\cref{prop:surprise}).
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[t]{0.46\linewidth}
+\panel{a}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[scale=0.95, dot/.style={circle, fill=sGray!70, inner sep=1.1pt}]
+\foreach \p in {(-2.6,-1.3),(-2.2,-1.6),(-2.9,-1.9),(-2.4,-2.1),(-1.9,-1.2)} \node[dot] at \p {};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (-2.4,-2.5) {earnings};
+\foreach \p in {(-2.4,1.5),(-2.0,1.9),(-2.8,1.9),(-2.3,2.2)} \node[dot] at \p {};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (-2.45,2.55) {mergers};
+\foreach \p in {(2.3,1.4),(2.7,1.8),(2.0,1.9),(2.6,1.2),(3.0,1.5)} \node[dot] at \p {};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (2.55,2.35) {regulation};
+\foreach \p in {(2.2,-2.1),(2.6,-2.4),(3.0,-2.0),(2.4,-1.8)} \node[dot] at \p {};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (2.7,-2.75) {macro};
+\draw[-{Stealth[length=2mm]}, echo, line width=1.0pt] (-3.2,1.6) -- (3.6,-1.8);
+\node[lbl, text=echo, anchor=west, font=\sffamily\tiny\bfseries] at (3.6,-1.8) {alarm};
+\node[lbl, text=good!85!black, anchor=east, font=\sffamily\tiny\bfseries] at (-3.2,1.6) {calm};
+\node[lbl, text=echo, rotate=-26.6, anchor=south, font=\sffamily\tiny] at (-1.7,0.9) {sentiment direction $\w_s^\perp$};
+\node[circle, draw=do, line width=0.8pt, fill=white, inner sep=1.8pt] (ez) at (0,0.9) {};
+\node[circle, fill=say, inner sep=2pt] (az) at (1.6,-0.3) {};
+\node[lbl, text=do, anchor=south, font=\sffamily\tiny] at (0,1.02) {expected $\hat{\z}$};
+\node[lbl, text=say, anchor=west, font=\sffamily\tiny] at (1.75,-0.3) {actual $\z$};
+\draw[-{Stealth[length=1.6mm]}, dashed, ink, line width=0.6pt] (ez) -- (az) node[midway, above right, lbl, font=\sffamily\tiny] {surprise $\bm\varepsilon$};
+\draw[dotted, sGray, line width=0.6pt] (ez) -- (-0.36,0.18);
+\draw[dotted, sGray, line width=0.6pt] (az) -- (1.40,-0.70);
+\draw[line width=2.2pt, echo!60] (-0.36,0.18) -- (1.40,-0.70);
+\node[lbl, text=echo, rotate=-26.6, anchor=north, font=\sffamily\tiny] at (0.52,-0.32) {sentiment surprise $s$};
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.51\linewidth}
+\panel{b}
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[scale=0.72,
+  cr/.style={circle, fill=echo, inner sep=1.5pt},
+  cg/.style={circle, fill=good, inner sep=1.5pt},
+  sr/.style={rectangle, fill=echo, inner sep=1.7pt},
+  sg/.style={rectangle, fill=good, inner sep=1.7pt}]
+\node[lbl, font=\sffamily\scriptsize\bfseries] at (2.3,3.4) {generic encoder};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (2.3,3.02) {clusters by topic};
+\draw[dashed, sGray, line width=0.5pt] (1.3,2.2) ellipse (0.95 and 0.6);
+\draw[dashed, sGray, line width=0.5pt] (3.5,0.9) ellipse (0.95 and 0.6);
+\node[lbl, text=sGray, font=\sffamily\tiny] at (1.3,1.35) {oil};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (3.5,0.05) {banks};
+\foreach \p in {(1.0,2.5),(1.6,2.0),(1.2,1.9)} \node[cr] at \p {};
+\foreach \p in {(1.5,2.5),(0.8,2.1),(1.9,2.3)} \node[cg] at \p {};
+\foreach \p in {(3.2,1.2),(3.8,0.7),(3.4,0.6)} \node[sr] at \p {};
+\foreach \p in {(3.7,1.2),(3.0,0.8),(4.0,1.0)} \node[sg] at \p {};
+\draw[-{Stealth[length=2mm]}, say, line width=1.0pt] (4.9,2.3) -- (6.6,2.3) node[midway, above, lbl, text=say, font=\sffamily\tiny, align=center] {return-aligned\\ fine-tuning};
+\node[lbl, font=\sffamily\scriptsize\bfseries] at (9.0,3.4) {market-aligned};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (9.0,3.02) {clusters by consequence};
+\draw[dashed, echo, line width=0.5pt] (7.9,2.2) ellipse (0.95 and 0.6);
+\draw[dashed, good, line width=0.5pt] (10.1,0.9) ellipse (0.95 and 0.6);
+\node[lbl, text=echo, font=\sffamily\tiny, anchor=north] at (7.9,1.55) {overdone};
+\node[lbl, text=good, font=\sffamily\tiny] at (10.1,0.05) {stuck};
+\foreach \p in {(7.5,2.4),(8.2,2.0),(7.8,1.9)} \node[cr] at \p {};
+\foreach \p in {(8.1,2.5),(7.4,2.0),(8.4,2.3)} \node[sr] at \p {};
+\foreach \p in {(9.8,1.2),(10.4,0.7),(10.0,0.6)} \node[cg] at \p {};
+\foreach \p in {(10.3,1.2),(9.6,0.8),(10.6,1.0)} \node[sg] at \p {};
+\node[cr] at (0.9,-0.65) {}; \node[lbl, anchor=west, font=\sffamily\tiny] at (1.05,-0.65) {price reversed};
+\node[cg] at (3.6,-0.65) {}; \node[lbl, anchor=west, font=\sffamily\tiny] at (3.75,-0.65) {price kept moving};
+\node[circle, draw=ink, inner sep=1.5pt] at (6.6,-0.65) {}; \node[lbl, anchor=west, font=\sffamily\tiny] at (6.75,-0.65) {oil};
+\node[rectangle, draw=ink, inner sep=1.7pt] at (7.9,-0.65) {}; \node[lbl, anchor=west, font=\sffamily\tiny] at (8.05,-0.65) {bank};
+\end{tikzpicture}\end{adjustbox}
+\end{minipage}
+\caption{\textbf{A map of meaning aligned with markets.} \textbf{a},~Stories cluster by topic, sentiment is a direction, and surprise is measured against the \emph{expected} story; its projection onto the alarm direction is the sentiment surprise. \textbf{b},~At the optimum of the return-aligned loss (\cref{thm:racl}), distances mirror market aftermaths, so ``news that got overdone'' becomes a region of the map.}
+\label{fig:embed}
+\end{figure}
+
+\subsection{Who moved first?}\label{sec:leadlag}
+
+The strongest false alarms have a clear order: money moves first, and the story turns against it later. To measure order we use the \emph{L\'evy area} of two paths $X$ and $Y$,
+\[
+  \mathcal{A}_T=\tfrac12\int_0^T(X_u-X_0)\,dY_u-(Y_u-Y_0)\,dX_u,
+\]
+which is the signed area swept by the path $(X,Y)$ and the antisymmetric part of its level-two signature.
+
+\begin{theorem}[Area identifies lead--lag]\label{thm:levy}
+Let $(X,Y)$ be zero-mean, jointly stationary and mean-square differentiable, with cross-covariance $C(h)=\E[X_sY_{s+h}]$. Then
+\[
+  \E[\mathcal{A}_T]=T\,C'(0)-\tfrac12\big(C(T)-C(-T)\big),
+\]
+so the area grows at rate $C'(0)$. If $Y_t=\gamma X_{t-\ell}+Z_t$ with independent noise $Z$ and a unimodal autocovariance for $X$, the rate has the sign of $\gamma\ell$.
+\end{theorem}
+
+\begin{inwords}
+Plot positioning against headline gloom and follow the path over a month. If it loops one way, money led the story; if it loops the other way, money followed it. The enclosed area measures how strongly (\cref{fig:loop}).
+\end{inwords}
+
+\begin{figure}[t]
+\centering
+\begin{adjustbox}{max width=\linewidth}\begin{tikzpicture}[scale=1.0,
+  arrowmid/.style={postaction={decorate}, decoration={markings,
+    mark=at position 0.12 with {\arrow{Stealth[length=1.8mm]}},
+    mark=at position 0.45 with {\arrow{Stealth[length=1.8mm]}},
+    mark=at position 0.78 with {\arrow{Stealth[length=1.8mm]}}}}]
+\begin{scope}
+\draw[-{Stealth[length=1.5mm]}, ink!75, line width=0.5pt] (0,0) -- (4.1,0) node[below left, lbl, font=\sffamily\tiny] {buying $\rightarrow$};
+\draw[-{Stealth[length=1.5mm]}, ink!75, line width=0.5pt] (0,0) -- (0,3.3) node[above, lbl, font=\sffamily\tiny] {gloom};
+\fill[good!16] plot[smooth cycle, tension=0.7] coordinates {(0.4,0.4) (2.4,0.55) (3.2,1.4) (3.0,2.6) (1.6,2.5) (0.6,1.5)};
+\draw[good, line width=1.0pt, arrowmid] plot[smooth cycle, tension=0.7] coordinates {(0.4,0.4) (2.4,0.55) (3.2,1.4) (3.0,2.6) (1.6,2.5) (0.6,1.5)};
+\node[lbl, text=good!80!black, font=\sffamily\tiny] at (1.9,1.5) {area $>0$};
+\node[numb] at (1.5,0.18) {1}; \node[numb] at (3.45,1.9) {2};
+\node[lbl, font=\sffamily\scriptsize\bfseries, align=center] at (2.0,-0.75) {money led};
+\end{scope}
+\begin{scope}[xshift=5.3cm]
+\draw[-{Stealth[length=1.5mm]}, ink!75, line width=0.5pt] (0,0) -- (4.1,0) node[below left, lbl, font=\sffamily\tiny] {buying $\rightarrow$};
+\draw[-{Stealth[length=1.5mm]}, ink!75, line width=0.5pt] (0,0) -- (0,3.3) node[above, lbl, font=\sffamily\tiny] {gloom};
+\fill[ink!8] plot[smooth cycle, tension=0.7] coordinates {(0.4,0.4) (0.6,1.5) (1.6,2.5) (3.0,2.6) (3.2,1.4) (2.4,0.55)};
+\draw[sGray, line width=1.0pt, arrowmid] plot[smooth cycle, tension=0.7] coordinates {(0.4,0.4) (0.6,1.5) (1.6,2.5) (3.0,2.6) (3.2,1.4) (2.4,0.55)};
+\node[lbl, text=sGray, font=\sffamily\tiny] at (1.9,1.5) {area $<0$};
+\node[numb] at (0.35,1.35) {1}; \node[numb] at (2.3,2.8) {2};
+\node[lbl, font=\sffamily\scriptsize\bfseries, align=center] at (2.0,-0.75) {money followed};
+\end{scope}
+\end{tikzpicture}\end{adjustbox}
+\caption{\textbf{Lead--lag as a loop.} In the (positioning, gloom) plane, the direction of travel shows who moved first, and the enclosed area shows how strongly (\cref{thm:levy}).}
+\label{fig:loop}
+\end{figure}
+
+% =====================================================================
+\section{From Signals to Decisions}\label{sec:decisions}
+
+Each event is assigned to one of three latent regimes: \emph{informational} (money confirms the story), \emph{overreaction} (mostly echo, no informed opposition) or \emph{strategic} (money opposes the story and moved first). A hidden Markov filter updates the regime probabilities using only past data (\cref{prop:filter}). The best forecast is then a probability-weighted mixture of regime-specific forecasts.
+
+The individual signals combine into a transparent score in which every sign is fixed by a theorem:
+\[
+  D=\underbrace{\omega_1s^{\mathrm{new}}}_{\text{follow news}}
+  -\underbrace{\omega_2s^{\mathrm{echo}}}_{\text{fade echo}}
+  +\underbrace{\omega_3\,\mathrm{Do}}_{\text{follow deeds}}
+  +\underbrace{\widehat{\sgn}\;\omega_4\gamma\,\mathrm{Say}}_{\text{follow or fade words}}
+  +\underbrace{\omega_5A}_{\text{absorption}}
+  +\underbrace{\omega_6\mathcal{A}^{\pm}}_{\text{money led}} .
+\]
+Here $\widehat{\sgn}$ is the rolling sign of $\Cov(\text{Say},\text{Do})$ (\cref{thm:identity}). When it is negative, the Say and Do terms combine into $-G_\gamma$, the Say--Do gap of \cref{thm:saydo}. $\mathcal{A}^\pm$ is the L\'evy area signed by the direction of positioning.
+
+Two safeguards turn the score into a position. Adaptive conformal intervals give forecast ranges whose long-run coverage holds for \emph{any} sequence of outcomes (\cref{thm:aci}). Positions are sized at a shrunk Kelly fraction $c^\star=\mathrm{SNR}/(1+\mathrm{SNR})$, because full Kelly loses money whenever the estimated edge is noisier than it is large (\cref{thm:kelly}). \Cref{fig:pipeline} shows the complete system, and \cref{tab:example} walks through one event.
+
+\begin{figure}[t]
+\centering
+\begin{adjustbox}{scale=1.25,max width=\linewidth}\begin{tikzpicture}[
+  voice/.style={rounded corners=2pt, line width=0.7pt, minimum width=1.9cm, minimum height=0.55cm, align=center, font=\sffamily\scriptsize\bfseries},
+  sig/.style={rounded corners=2pt, draw=ink!40, fill=ink!4, line width=0.5pt, minimum width=2.45cm, minimum height=0.78cm, align=center, font=\sffamily\tiny},
+  arr/.style={-{Stealth[length=1.5mm]}, line width=0.5pt, ink!60}]
+\node[voice, draw=say, fill=say!8, text=say] (say) at (0,0) {Say};
+\node[voice, draw=echo, fill=echo!8, text=echo] (echo) at (2.75,0) {Echo};
+\node[voice, draw=do, fill=do!8, text=do] (do) at (5.5,0) {Do};
+\node[sig] (gap) at (0,-1.25) {\textbf{Say--Do}\\ gap \& covariance sign\\ (Thms~\ref{thm:saydo}, \ref{thm:identity})};
+\node[sig] (news) at (2.75,-1.25) {\textbf{news vs echo}\\ semantic declustering\\ (Thm~\ref{thm:semantic})};
+\node[sig] (abs) at (5.5,-1.25) {\textbf{absorption, lead--lag}\\ interpretation gap, area\\ (Thms~\ref{thm:absorption}, \ref{thm:levy})};
+\node[rounded corners=2pt, draw=do, fill=do!8, line width=0.7pt, minimum width=7.9cm, minimum height=0.55cm, font=\sffamily\scriptsize, align=center] (reg) at (2.75,-2.45) {\textbf{regime filter}: informational \textbullet\ overreaction \textbullet\ strategic};
+\node[rounded corners=2pt, draw=good, fill=good!12, line width=0.9pt, minimum width=4.2cm, minimum height=0.55cm, font=\sffamily\scriptsize, align=center] (dec) at (2.75,-3.35) {\textbf{follow or fade}, sized by conformal Kelly};
+\draw[arr] (say) -- (gap); \draw[arr] (do) -- (gap.north east);
+\draw[arr] (echo) -- (news); \draw[arr] (echo) -- (abs.north west); \draw[arr] (do) -- (abs);
+\draw[arr] (gap) -- (gap|-reg.north); \draw[arr] (news) -- (news|-reg.north); \draw[arr] (abs) -- (abs|-reg.north);
+\draw[arr] (reg) -- (dec);
+\end{tikzpicture}\end{adjustbox}
+\caption{\textbf{The complete system.} Three voices produce three families of theorem-signed signals; a regime filter turns them into one calibrated, sized decision.}
+\label{fig:pipeline}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Illustration: a hypothetical downgrade.} The numbers are illustrative, not data.}
+\label{tab:example}
+\small
+\begin{tabularx}{0.85\linewidth}{@{}Xr@{}}
+\toprule
+\textsf{Signal (result)} & \textsf{Reading} \\
+\midrule
+news / echo sentiment (\cref{thm:semantic}) & $-0.5\sigma$ / $-2.3\sigma$ \\
+echo share $n$ (\cref{prop:branching}) & $0.82$ \\
+Say--Do covariance (\cref{thm:identity}) & negative: fade the words \\
+implied vs actual move, absorption (\cref{thm:absorption}) & $-6.0\%$ vs $-1.9\%$ \\
+L\'evy area rate (\cref{thm:levy}) & positive: money led \\
+regime probabilities, informational / overreaction / strategic & $0.10$ / $0.28$ / $0.62$ \\
+Kelly fraction (\cref{thm:kelly}) at SNR $\approx0.5$ & $c^\star\approx0.33$ \\
+\midrule
+\multicolumn{2}{@{}l@{}}{\textsf{\textbf{Reading:}} a probable false alarm; lean long at about one third of full Kelly.}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% =====================================================================
+\section{Numerical Evidence}\label{sec:evidence}
+
+Every closed form in the paper was checked independently (\cref{tab:verify}). The Gaussian results were checked by regression on two million simulated draws. The Say--Do identity was checked with fat-tailed values ($t_3$) and Laplace noise, which tests its distribution-free claim. Optimal speech was compared with numerical optimisation, semantic declustering with brute-force enumeration of every possible parent assignment, and the L\'evy-area rate with a smooth Gaussian process with a known lag. Theory values are exact, and all numbers are regenerated by the accompanying code.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Theory versus independent checks} ($2\times10^6$ draws, seed 0).}
+\label{tab:verify}
+\small
+\begin{tabularx}{0.92\linewidth}{@{}l>{\raggedright\arraybackslash}Xrr@{}}
+\toprule
+\textsf{Result} & \textsf{Quantity} & \textsf{Theory} & \textsf{Check} \\
+\midrule
+\multicolumn{4}{@{}l}{\textsf{\footnotesize\color{sGray} A market with three voices}}\\
+\cref{cor:echo} & Bayes weight on the echo channel & $0$ & $-0.0006$ \\
+\cref{thm:followfade} & return loading on the echo channel & $-0.1840$ & $-0.1843$ \\
+\cref{thm:saydo} & loading on positioning, $c_x$ & $0.4012$ & $0.4004$ \\
+\cref{thm:absorption} & absorption coefficient, $c_A$ & $-0.1997$ & $-0.2004$ \\
+\multicolumn{4}{@{}l}{\textsf{\footnotesize\color{sGray} Why false alarms happen}}\\
+\cref{thm:speech} & speech slope $\psi$ ($\varphi=0.6$, $a=0.5$) & $-0.7143$ & $-0.7143$ \\
+\cref{thm:speech} & trade slope $\chi$ ($\varphi=0.6$, $a=0.5$) & $1.4286$ & $1.4286$ \\
+\cref{thm:identity} & $\Cov(r,\text{Say})$, $t_3$ values, false alarm & $-2.294$ & $-2.293$ \\
+\cref{thm:identity} & $\Cov(r,\text{Say})$, $t_3$ values, exaggeration & $-7.608$ & $-7.676$ \\
+\cref{thm:cycles} & cycle points at $a=1.95$ & $\{0.8189,\,1.1311\}$ & $\{0.8189,\,1.1311\}$ \\
+\cref{thm:cycles} & cycle multiplier at $a=1.8$ & $0$ & $9\times10^{-16}$ \\
+\multicolumn{4}{@{}l}{\textsf{\footnotesize\color{sGray} Measuring the voices}}\\
+\cref{thm:semantic} & largest error of the factorised posterior & $0$ & $1.1\times10^{-16}$ \\
+\cref{thm:levy} & L\'evy-area rate, lag $0.5$ & $0.2356$ & $0.2360$ \\
+\multicolumn{4}{@{}l}{\textsf{\footnotesize\color{sGray} Decisions}}\\
+\cref{thm:kelly} & growth at the shrunk Kelly fraction & $0.01056$ & $0.01055$ \\
+\cref{thm:kelly} & growth at full Kelly & $-0.0300$ & $-0.0300$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The $t_3$ exaggeration case converges most slowly, because the fourth moment of a $t_3$ variable is infinite; the pathwise identity itself holds to machine precision.
+
+Semantic declustering was also tested beyond exactness. We simulated news cascades in which echoes are von Mises--Fisher copies of their parents and asked each method to recover the true parent of every article (\cref{fig:decluster}). Timing alone recovers about one parent in four, whatever the concentration. Adding meaning raises accuracy to about 95\% when echoes are close copies, and it nearly eliminates the error in each article's probability of being an echo.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.86\linewidth]{fig_declustering.pdf}
+\caption{\textbf{Meaning makes echo detection work.} Simulated cascades (Hawkes $\mu=0.6$, $\alpha=1$, $\beta=1.25$; $16$-dimensional embeddings). \textbf{a},~Accuracy of the most likely parent. \textbf{b},~Mean absolute error of each article's echo probability. Grey: timing only. Red: timing and meaning (\cref{thm:semantic}).}
+\label{fig:decluster}
+\end{figure}
+
+% =====================================================================
+\section{Discussion}\label{sec:discussion}
+
+\paragraph{Predictions} The theory makes sharp, testable claims:
+\begin{itemize}
+  \item news sentiment and echo sentiment predict returns with \emph{opposite} signs;
+  \item the Say--Do covariance is negative in episodes that are later identified as manipulative;
+  \item false alarms concentrate at intermediate echo shares in liquid markets, and exaggeration concentrates in illiquid ones;
+  \item the rolling Say--Do covariance is negatively autocorrelated where deterrence is moderate;
+  \item the absorption loading changes sign with the toxicity of order flow;
+  \item returns are higher after episodes in which money moved first.
+\end{itemize}
+The cleanest first test pairs management tone on earnings calls (\SAY) with insider trades (\DO). Both are public, and both concern the same actors.
+
+\paragraph{Limitations} The crowd's pricing rule is reduced-form, and its credulity is fixed within a round. The Gaussian results pin down signs and sufficient statistics, not magnitudes. The lead--lag theorem assumes smooth, stationary paths, whereas real positioning and prices are rough. Above all, this paper contains no empirical backtest. Validation will require point-in-time data, purged cross-validation and deflated performance statistics \citep{lopezdeprado2018,bailey2014dsr}, as well as controls for look-ahead bias in pretrained language models \citep{glasserman2023}.
+
+\paragraph{Responsible use} A ``strategic'' reading means only that narrative and capital moved in opposite directions in a particular order. It is not evidence that anyone lied, and firms maintain information barriers between research and trading. The framework uses public information and lawful disclosures only, and it is intended for detection, research and investor protection. Creating or spreading narratives intended to move prices is market manipulation. Nothing in this paper is investment advice.
+
+\paragraph{Data and code availability} No proprietary data are used. A tested Python implementation of every result, together with scripts that regenerate \cref{tab:verify} and the quantitative figures, accompanies the paper at [repository URL].
+
+% =====================================================================
+\bibliographystyle{plainnat}
+{\small\bibliography{say_echo_do}}
+
+\clearpage
+\appendix
+\section{Proofs}\label{app:proofs}
+
+\begin{lemma}[Gaussian conditioning]\label{lem:gauss}
+If $(\bm a,\bm b)$ is jointly Gaussian with $\Var\bm b\succ0$, then $\E[\bm a\mid\bm b]=\E\bm a+\Cov(\bm a,\bm b)\Var(\bm b)^{-1}(\bm b-\E\bm b)$ and $\Var(\bm a\mid\bm b)=\Var\bm a-\Cov(\bm a,\bm b)\Var(\bm b)^{-1}\Cov(\bm b,\bm a)$. The same holds conditionally on a further jointly Gaussian vector.
+\end{lemma}
+\begin{proof}
+The residual $\bm e=\bm a-\E\bm a-\Cov(\bm a,\bm b)\Var(\bm b)^{-1}(\bm b-\E\bm b)$ is uncorrelated with $\bm b$, and therefore independent of it by joint Gaussianity. Its variance expands to the stated formula.
+\end{proof}
+
+\paragraph{Price and return} From $x=\beta(v-p)$, $p(1+\lambda\beta)=\bphi^\top\y+\lambda\beta v+\lambda u$, so $r=v-p=\kappa(v-\bphi^\top\y-\lambda u)$.
+
+\begin{proof}[Proof of \cref{thm:followfade}]
+$\E[v\mid\y]=\sigma_v^2\h^\top\Sigma_y^{-1}\y=\w^{\star\top}\y$ and $\E[u\mid\y]=0$. The residual $r-\E[r\mid\y]=\kappa\big((v-\E[v\mid\y])-\lambda u\big)$ has independent components given $\y$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{cor:echo}]
+$\sigma(\y)=\sigma(\y_{-e},\xi)$ with $\xi$ independent of $(v,\y_{-e})$, so $\E[v\mid\y]=\E[v\mid\y_{-e}]$, which is linear in $\y_{-e}$ alone. If $\w^{\star\top}\y=\w'^\top\y$ almost surely with $w'_e=0$, then $(\w^\star-\w')^\top\Sigma_y(\w^\star-\w')=0$, and $\Sigma_y\succ0$ gives $\w^\star=\w'$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{cor:news}]
+Conditionally on $\y_{-n}$, $v\sim\N(\mu',s^2)$ with $s^2>0$. The scalar update puts weight $s^2/(s^2+\sigma_n^2)\in(0,1)$ on $n$. Apply \cref{thm:followfade}.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:saydo}]
+$x=\beta r$, so $\hat x=\beta r+\xi_x$. Given $\y$, $\Cov(r,\hat x)=\beta\varsigma^2$ and $\Var\hat x=\beta^2\varsigma^2+\sigma_x^2$. \Cref{lem:gauss} gives $\E[r\mid\y,\hat x]=(1-\beta c_x)\E[r\mid\y]+c_x\hat x$ with $1-\beta c_x=\theta$, and $\Var=\varsigma^2-c_x\beta\varsigma^2=\theta\varsigma^2$. The $(m,\hat x)$ terms are $-\theta\kappa(\varphi_1-w^\star_1)m+c_x\hat x=-c_x(\gamma m-\hat x)$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:absorption}]
+Let $\tilde v=v-\E[v\mid\y]$. Then $r-\E[r\mid\y]=\kappa(\tilde v-\lambda u)$. Since $a=\lambda\beta r+\lambda u$, we get $a-\E[a\mid\y]=\lambda\beta\kappa\tilde v+\lambda(1-\lambda\beta\kappa)u=\lambda\kappa(\beta\tilde v+u)$, using $1-\lambda\beta\kappa=\kappa$. Hence $\Cov(r,a\mid\y)=\lambda\kappa^2(\beta\sigma^2_{v|y}-\lambda\sigma_u^2)$ and $\Var(a\mid\y)=\lambda^2\kappa^2(\beta^2\sigma^2_{v|y}+\sigma_u^2)$. Their ratio is $c_A$ by \cref{lem:gauss}. At Kyle's intensities, $\beta\sigma^2_{v|y}=\sigma_u\sigma_{v|y}$ and $\lambda\sigma_u^2=\tfrac12\sigma_u\sigma_{v|y}$, which give $c_A=\tfrac12$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{lem:robust}]
+$\hat a=a+(\bphi-\hat\bphi)^\top\y$ is an invertible affine map of $a$ given $\y$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:speech}]
+$J$ is quadratic with Hessian $H=\begin{psmallmatrix}-2\lambda&-\varphi\\-\varphi&-k\end{psmallmatrix}$, which is negative definite iff $\det H=a-\varphi^2>0$. Then $J$ is strictly concave, and its unique maximiser solves $v-\varphi m-2\lambda x=0$ and $-\varphi x-k(m-v)=0$. Substitution gives $m(a-\varphi^2)=v(a-\varphi)$, and $1-\varphi\psi=a(1-\varphi)/(a-\varphi^2)$ gives $\chi$. If $\det H<0$, then $J(t\bm d)\to\infty$ along an eigenvector $\bm d$ with positive eigenvalue.
+\end{proof}
+
+\begin{proof}[Proof of \cref{cor:taxonomy}]
+$\psi>0\iff a>\varphi$; $\psi<1\iff\varphi<1$; and $\sgn\chi=\sgn(1-\varphi)$. If $\varphi>1$, then $a>\varphi^2>\varphi$, so $\psi>1$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:identity}]
+Given $m$, the optimal trade is $x=(v-\varphi m)/(2\lambda)$, so $v-\varphi m=2\lambda x$ and $r=v-\varphi(m+\varepsilon)-\lambda x=\lambda x-\varphi\varepsilon$. Since $x$ and $m$ are functions of $v$, which is independent of $\varepsilon$, we have $\Cov(\varepsilon,\tilde m)=\sigma_\varepsilon^2$ and $\E[\varepsilon\mid x]=0$. In equilibrium, $\Cov(\chi v,\psi v)=\psi\chi\sigma_v^2$, and $\psi\chi<0$ exactly in the false-alarm and exaggeration regimes.
+\end{proof}
+
+\begin{proof}[Proof of \cref{prop:virality}]
+$\varphi=\varphi_0/(1-n)$ increases from $\varphi_0$ to $\infty$. A false alarm needs $\varphi^2<a<\varphi<1$, hence $a<1$. Exaggeration needs $1<\varphi<\sqrt a$, hence $a>1$. The conditions $\varphi>a$, $\varphi>1$ and $\varphi<\sqrt a$ translate to $n>1-\varphi_0/a$, $n>1-\varphi_0$ and $n<1-\varphi_0/\sqrt a$. For $a<1$, $\varphi<\sqrt a$ already implies $\varphi<1$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:cycles}]
+(i) $F_a(\varphi)=\varphi\iff\varphi=1$, and admissibility ($\varphi^2<a$) needs $a>1$.
+(ii) $F_a'(\varphi)=(a-2a\varphi+\varphi^2)/(a-\varphi)^2$, so $F_a'(1)=-1/(a-1)$, whose modulus is below $1$ iff $a>2$.
+(iii) Using $a-F_a(\varphi)=(a^2-a\varphi-a+\varphi^2)/(a-\varphi)$, direct computation gives
+\[
+  F_a(F_a(\varphi))-\varphi=\frac{-a(\varphi-1)(2\varphi^2-2a\varphi+a^2-a)}{(a-\varphi)^2\big(a-F_a(\varphi)\big)} .
+\]
+The quadratic factor has roots $\varphi_\pm$, which are real and different from $1$ for $1<a<2$; its value at $\varphi=1$ is $(a-1)(a-2)\neq0$. They are admissible: $\varphi_\pm^2=\tfrac a2\big(1\pm\sqrt{a(2-a)}\big)<a$ because $a(2-a)<1$; $\varphi_\pm<a$ because $\sqrt{a(2-a)}<a\iff a>1$; and $\psi(\varphi_\pm)>0$. On the cycle, $\varphi^2=a\varphi-(a^2-a)/2$, so the numerator of $F'_a$ equals $a(3-a-2\varphi)/2$. With $\varphi_++\varphi_-=a$ and $\varphi_+\varphi_-=(a^2-a)/2$, we get $(3-a-2\varphi_+)(3-a-2\varphi_-)=(5a-9)(a-1)$ and $(a-\varphi_+)(a-\varphi_-)=a(a-1)/2$. Hence the multiplier is $(5a-9)/(a-1)$, whose modulus is below $1$ iff $\tfrac53<a<2$ when $1<a<2$.
+(iv) At $a=2$ the multiplier is $1$ and $\varphi_\pm=1$; at $a=\tfrac53$ it is $-1$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{prop:branching}]
+Each news article founds a Galton--Watson cluster of expected size $\sum_kn^k=(1-n)^{-1}$. News arrives at rate $\mu$, so articles arrive at rate $\mu/(1-n)$, and the news share is $1-n$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:semantic}]
+In the cluster representation, a labelled configuration is a realisation of independent Poisson streams: news at rate $\rho_0=\mu$, and echoes of $l$ at rate $\rho_l(t)=g(t-\tau_l)\ind\{t>\tau_l\}$. Its density is the product of the stream likelihoods and the mark densities,
+\[
+  e^{-\int_0^T\lambda}\prod_{j}\rho_{\pi(j)}(\tau_j)\,f_{\pi(j)}(\z_j),\qquad f_0\ \text{(news)},\quad f_l=f(\cdot\mid\z_l),
+\]
+because $\sum_k\rho_k=\lambda$. This factorises over $j$. Summing over labellings gives $e^{-\int\lambda}\prod_j\Lambda_j$, so the posterior is a product of the stated categorical laws. Because $s_j$ is a function of $\z_j$, $\E[\ind\{\pi(j)=0\}s_j\mid\cdot]=s_jp^{\mathrm{sem}}_j$. Integrating out the marks recovers the timing-only posterior, and conditioning does not increase expected entropy.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:racl}]
+Per anchor, $-\sum_kq_{jk}\log p_{jk}=H(q_{j\cdot})+\KL(q_{j\cdot}\|p_{j\cdot})$, with equality to $H(q_{j\cdot})$ iff $p_{j\cdot}=q_{j\cdot}$, that is, iff the logits differ by a constant $c_j$: $S_{jk}/\tau+D_{jk}/2b^2=c_j/\tau$. Symmetry of $S$ and $D$ forces $c_j=c_k$ for every pair, and on the sphere $\|\z_j-\z_k\|^2=2-2S_{jk}$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:robustnn}]
+Pinsker gives $\sum_k|p_{jk}-q_{jk}|\le\sqrt{2\epsilon_j}$, so $p_{jk}-p_{jl}\ge q_{jk}-q_{jl}-\sqrt{2\epsilon_j}>0$. Softmax is monotone in $S_{j\cdot}$, so $S_{jk}>S_{jl}$, which gives the distance ordering.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:levy}]
+Mean-square differentiability gives $\E[X_s\dot Y_t]=C'(t-s)$ and $\E[Y_s\dot X_t]=-C'(s-t)$. Hence $\E[(X_u-X_0)\dot Y_u]=C'(0)-C'(u)$ and $\E[(Y_u-Y_0)\dot X_u]=-C'(0)+C'(-u)$. By Fubini,
+\[
+  \E[\mathcal{A}_T]=\tfrac12\int_0^T\big(2C'(0)-C'(u)-C'(-u)\big)\,du=TC'(0)-\tfrac12\big(C(T)-C(-T)\big).
+\]
+For $Y_t=\gamma X_{t-\ell}+Z_t$, $C(h)=\gamma R(h-\ell)$, so $C'(0)=-\gamma R'(\ell)$. This has the sign of $\gamma\ell$ when $R$ is even with $R'<0$ on $(0,\infty)$.
+\end{proof}
+
+\section{Additional Results}\label{app:extra}
+
+\begin{proposition}[Causal filtering and mixture optimality]\label{prop:filter}
+Filtered regime probabilities $\pi_t\propto f(\bm o_t)\odot P^\top\pi_{t-1}$ are $\F_t$-measurable, and $\E[r_{t+h}\mid\F_t]=\sum_k\pi_t(k)\E[r_{t+h}\mid\F_t,K_t=k]$. Smoothed probabilities are not $\F_t$-measurable in general and must not be used for forecasting.
+\end{proposition}
+\begin{proof}
+The recursion is Bayes' rule, and the mixture follows from the tower property.
+\end{proof}
+
+\begin{theorem}[Exponential detectability]\label{thm:detect}
+For $n$ events that are i.i.d.\ within a regime, with emissions $\N(\bm m_i,\Sigma)$ and priors $\pi_i$, the MAP error satisfies $P_e\le\sqrt{\pi_0\pi_1}\,e^{-n\Delta^2/8}\le\tfrac12e^{-n\Delta^2/8}$, where $\Delta^2=(\bm m_1-\bm m_0)^\top\Sigma^{-1}(\bm m_1-\bm m_0)$.
+\end{theorem}
+\begin{proof}
+$\min\{a,b\}\le\sqrt{ab}$ gives $P_e\le\sqrt{\pi_0\pi_1}\,\mathrm{BC}^n$ \citep{bhattacharyya1943,kailath1967}. For equal-covariance Gaussians, completing the square gives $\mathrm{BC}=\int\sqrt{p_0p_1}=e^{-\Delta^2/8}$.
+\end{proof}
+
+\begin{theorem}[Adaptive conformal coverage; \citealp{gibbs2021}, Prop.~4.1]\label{thm:aci}
+With nested sets $\hat C_t(\alpha')$ that equal $\R$ for $\alpha'\le0$ and $\emptyset$ for $\alpha'\ge1$, and the update $\alpha_{t+1}=\alpha_t+\gamma(\alpha-\mathrm{err}_t)$, every outcome sequence satisfies $|\frac1T\sum_t\mathrm{err}_t-\alpha|\le(\max\{\alpha_1,1-\alpha_1\}+\gamma)/(\gamma T)$.
+\end{theorem}
+\begin{proof}[Proof (reproduced)]
+By induction, $\alpha_t\in[-\gamma,1+\gamma]$. Telescoping gives $\alpha_{T+1}-\alpha_1=\gamma\sum_t(\alpha-\mathrm{err}_t)$.
+\end{proof}
+
+\begin{theorem}[Kelly shrinkage under estimation risk; classical]\label{thm:kelly}
+With excess growth rate $g(f)=f\mu-\tfrac12f^2\sigma^2$ \citep{merton1969,kelly1956}, an unbiased estimate $\hat\mu$ with variance $s^2$ that is independent of future returns, and $f=c\hat\mu/\sigma^2$, the expected growth is $\E g=(c\mu^2-\tfrac12c^2(\mu^2+s^2))/\sigma^2$. It is maximised at $c^\star=\mu^2/(\mu^2+s^2)$. Full Kelly yields $(\mu^2-s^2)/(2\sigma^2)$, which is negative when $s>|\mu|$.
+\end{theorem}
+\begin{proof}
+Expand $\E[f\mu]$ and $\E[f^2]$ and maximise the resulting concave quadratic in $c$.
+\end{proof}
+
+\begin{proposition}[Analog forecasting]\label{prop:analog}
+If $\mathrm{AR}_j=\mu(\z_j)+e_j$ with uncorrelated mean-zero errors of variance at most $\sigma^2$, $\mu$ is $L$-Lipschitz, and weights $\omega_j\ge0$ sum to one, then the estimator $\hat\mu(\z)=\sum_j\omega_j\mathrm{AR}_j$ has bias at most $L\sum_j\omega_jd(\z,\z_j)$ and variance at most $\sigma^2\sum_j\omega_j^2$.
+\end{proposition}
+
+\begin{proposition}[Calibrated surprise]\label{prop:surprise}
+If $\z\mid\F\sim\N(\hat\z,\Sigma)$, then $S=(\z-\hat\z)^\top\Sigma^{-1}(\z-\hat\z)\sim\chi^2_D$, and $S$ equals Shannon surprisal up to additive constants.
+\end{proposition}
+
+\begin{figure}[h]
+\centering
+\begin{minipage}[t]{0.48\textwidth}
+\panel{a}
+\centering
+\begin{tikzpicture}
+\begin{semilogyaxis}[sci, log basis y=10, yticklabel={$10^{\pgfmathprintnumber{\tick}}$}, width=7.2cm, height=5.2cm, xmin=0, xmax=40, ymin=1e-5, ymax=0.6,
+  xlabel={events in episode $n$}, ylabel={bound on misclassification $P_e$},
+  legend style={at={(0.02,0.02)}, anchor=south west}, samples=80, domain=0:40]
+\addplot[sGray] {0.5*exp(-x*0.25/8)}; \addlegendentry{$\Delta=0.5$}
+\addplot[say] {0.5*exp(-x*1/8)}; \addlegendentry{$\Delta=1$}
+\addplot[do] {0.5*exp(-x*2.25/8)}; \addlegendentry{$\Delta=1.5$}
+\addplot[good] {0.5*exp(-x*4/8)}; \addlegendentry{$\Delta=2$}
+\end{semilogyaxis}
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\panel{b}
+\centering
+\begin{tikzpicture}
+\begin{axis}[sci, width=7.2cm, height=5.2cm, xmin=0, xmax=1.6, ymin=-0.35, ymax=0.55,
+  xlabel={Kelly fraction $c$}, ylabel={expected growth $\times\sigma^2/\mu^2$},
+  legend style={at={(0.02,0.02)}, anchor=south west}, samples=100, domain=0:1.6]
+\addplot[ink!40, line width=0.4pt, forget plot] coordinates {(0,0) (1.6,0)};
+\addplot[good] {x - 0.5*x^2*(1+1/4)}; \addlegendentry{SNR $=4$}
+\addplot[do] {x - 0.5*x^2*(1+1/1)}; \addlegendentry{SNR $=1$}
+\addplot[echo] {x - 0.5*x^2*(1+1/0.5)}; \addlegendentry{SNR $=0.5$}
+\addplot[only marks, mark=*, mark size=1.6pt, good, forget plot] coordinates {(0.8,0.4)};
+\addplot[only marks, mark=*, mark size=1.6pt, do, forget plot] coordinates {(0.5,0.25)};
+\addplot[only marks, mark=*, mark size=1.6pt, echo, forget plot] coordinates {(0.3333,0.16667)};
+\addplot[ink!40, line width=0.5pt, dashed, forget plot] coordinates {(1,-0.35) (1,0.55)};
+\node[lbl, text=ink!60, anchor=south west, font=\sffamily\tiny] at (axis cs:1.01,0.43) {full Kelly};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{\textbf{Detection and sizing.} \textbf{a},~Misclassification of strategic episodes decays exponentially in episode length (\cref{thm:detect}). \textbf{b},~Expected growth as a function of the Kelly fraction; dots mark $c^\star=\mathrm{SNR}/(1+\mathrm{SNR})$ (\cref{thm:kelly}).}
+\label{fig:sizing}
+\end{figure}
+
+\section{Implementation Notes}\label{app:impl}
+
+\paragraph{Encoder} A transformer sentence encoder \citep{reimers2019} with low-rank adapters, trained on the return-aligned loss plus a KL anchor to the frozen encoder, on rolling windows whose outcome horizons close before each refit date. Pretrained components must predate each test window \citep{glasserman2023}.
+
+\paragraph{Echo} Exponential Hawkes kernels are fitted per semantic cluster, with von Mises--Fisher echo marks. The posteriors of \cref{thm:semantic} cost $O(N\cdot\bar k)$ with $\bar k$ candidate parents retrieved from a vector index.
+
+\paragraph{Say--Do} Pair management tone with insider trades, and published house views with disclosed holdings or futures positioning. A lag-augmented Kalman filter merges disclosures of mixed frequency, and a rolling window estimates $\Cov(\text{Say},\text{Do})$.
+
+\paragraph{Validation} Point-in-time data, combinatorial purged cross-validation and deflated performance statistics \citep{lopezdeprado2018,bailey2014dsr}.
+
+
+
+\end{document}
